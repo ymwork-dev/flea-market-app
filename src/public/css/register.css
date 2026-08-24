@@ -1,0 +1,26 @@
+@import url('login.css');
+
+.register-container {
+    max-width: 400px;
+    margin: 80px auto;
+    padding: 0 20px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.btn-submit {
+    width: 100%;
+    background-color: #ff4d4b;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+}

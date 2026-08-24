@@ -1,0 +1,122 @@
+.purchase-container {
+    max-width: 1000px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.purchase-content {
+    display: flex;
+    gap: 80px;
+    align-items: flex-start;
+}
+
+.purchase-main {
+    flex: 2;
+}
+
+.item-info {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.item-image img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+}
+
+.item-detail h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.item-detail p {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 40px 0;
+}
+
+.purchase-side-area {
+    flex: 1;
+    min-width: 350px;
+}
+
+.purchase-side-box {
+    border: 1px solid #333;
+    padding: 0;
+    margin-bottom: 50px;
+    background-color: #fff;
+}
+
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.summary-table th,
+.summary-table td {
+    padding: 30px 25px;
+}
+
+.summary-table tr:first-child th,
+.summary-table tr:first-child td {
+    border-bottom: 1px solid #333;
+}
+
+.summary-table th {
+    text-align: left;
+    font-weight: normal;
+    width: 45%;
+}
+
+.summary-table td {
+    text-align: right;
+    font-weight: bold;
+}
+
+.purchase-button {
+    width: 100%;
+    padding: 18px;
+    background-color: #ff5a5f;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.purchase-button:disabled {
+    background-color: #ffb2b5;
+    cursor: not-allowed;
+}
+
+.selection-section h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.select-box {
+    width: 60%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.change-link {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.change-link:hover {
+    text-decoration: underline;
+}

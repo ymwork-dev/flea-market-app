@@ -1,0 +1,45 @@
+.verify-container {
+    max-width: 600px;
+    margin: 100px auto;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.verify-message {
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+.btn-verify {
+    display: inline-block;
+    background-color: #ddd;
+    color: #333;
+    text-decoration: none;
+    padding: 12px 40px;
+    border-radius: 4px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.btn-resend {
+    background: none;
+    border: none;
+    color: #3b82f6;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.btn-resend:hover {
+    text-decoration: underline;
+}
+
+.success-message {
+    color: #28a745;
+    margin-top: 20px;
+    font-size: 14px;
+}

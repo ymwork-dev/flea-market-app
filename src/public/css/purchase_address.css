@@ -1,0 +1,66 @@
+.address-container {
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.address-container h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 50px;
+    color: #333;
+}
+
+.address-container form div {
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.address-container label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+.address-container input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.address-container button[type="submit"] {
+    width: 100%;
+    padding: 15px;
+    background-color: #ff5a5f;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.address-container button[type="submit"]:hover {
+    background-color: #e04b4f;
+}
+
+.error-message {
+    color: #ff4d4d;
+    font-size: 14px;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+@media (max-width: 480px) {
+    .address-container {
+        margin: 30px auto;
+    }
+}

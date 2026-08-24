@@ -1,0 +1,27 @@
+.flash-message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #c3e6cb;
+    position: relative;
+}
+
+.flash-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #f5c6cb;
+    position: relative;
+}
+
+.flash-close {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-weight: bold;
+}

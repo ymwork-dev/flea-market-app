@@ -1,17 +1,8 @@
 {
   "version": 2,
   "functions": {
-    "api/index.php": {
-      "runtime": "vercel-php@0.7.2"
+    "public/index.php": {
+      "runtime": "vercel-php@0.8"
     }
-  },
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/api/index.php"
-    }
-  ],
-  "overrides": {
-    "src/composer.json": { "buildCommand": "composer install --no-dev" }
   }
 }

@@ -3,7 +3,7 @@
   "framework": null,
   "functions": {
     "api/index.php": {
-      "runtime": "vercel-php"
+      "runtime": "@juicyfx/vercel-php@3.0.0"
     }
   },
   "routes": [

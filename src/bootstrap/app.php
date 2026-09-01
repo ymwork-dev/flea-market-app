@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // 2. 自作ミドルウェアの登録（ここを追記！）
         $middleware->alias([
             'ensure.profile.completed' => \App\Http\Middleware\EnsureProfileIsCompleted::class,
+            'ensure.verified.profile' => \App\Http\Middleware\EnsureVerifiedProfileIfLoggedIn::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

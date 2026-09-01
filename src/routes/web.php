@@ -8,8 +8,10 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ProfileController;
 
-Route::get('/', [ItemController::class, 'index'])->name('item.index');
-Route::get('/item/{item_id}', [ItemController::class, 'show'])->name('item.show');
+Route::middleware(['ensure.verified.profile'])->group(function () {
+    Route::get('/', [ItemController::class, 'index'])->name('item.index');
+    Route::get('/item/{item_id}', [ItemController::class, 'show'])->name('item.show');
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/mypage/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -35,7 +35,21 @@
             </div>
         </div>
 
-        @if($item->is_sold)
+        @if(Auth::check() && Auth::id() === $item->user_id)
+            @if($item->is_sold)
+                <button class="btn-purchase is-sold" disabled style="background-color: #888; cursor: not-allowed;">売り切れました</button>
+            @else
+                <div class="owner-actions">
+                    <a href="{{ route('item.edit', ['item_id' => $item->id]) }}" class="btn-purchase">編集する</a>
+                    <form action="{{ route('item.destroy', ['item_id' => $item->id]) }}" method="POST"
+                        onsubmit="return confirm('本当に削除しますか？');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn-purchase" style="background-color: #888;">削除する</button>
+                    </form>
+                </div>
+            @endif
+        @elseif($item->is_sold)
             <button class="btn-purchase is-sold" disabled style="background-color: #888; cursor: not-allowed;">売り切れました</button>
         @else
             <a href="/purchase/{{ $item->id }}" class="btn-purchase">購入手続きへ</a>

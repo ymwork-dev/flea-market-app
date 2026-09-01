@@ -26,6 +26,9 @@ Route::middleware(['auth', 'verified', 'ensure.profile.completed'])->group(funct
 
     Route::get('/sell', [SellController::class, 'sell'])->name('sell');
     Route::post('/sell', [SellController::class, 'store'])->name('item.store');
+    Route::get('/sell/{item_id}/edit', [SellController::class, 'edit'])->name('item.edit');
+    Route::put('/sell/{item_id}', [SellController::class, 'update'])->name('item.update');
+    Route::delete('/sell/{item_id}', [SellController::class, 'destroy'])->name('item.destroy');
 
     Route::get('/purchase/{item_id}', [PurchaseController::class, 'showPurchasePage'])->name('purchase.show');
     Route::post('/purchase/{item_id}', [PurchaseController::class, 'purchase'])->name('purchase.store');

@@ -111,6 +111,23 @@
     cursor: not-allowed;
 }
 
+.owner-actions {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0 30px;
+}
+
+.owner-actions .btn-purchase,
+.owner-actions form {
+    margin: 0;
+    flex: 1;
+}
+
+.owner-actions button.btn-purchase {
+    width: 100%;
+    cursor: pointer;
+}
+
 .section-title {
     font-size: 20px;
     font-weight: bold;

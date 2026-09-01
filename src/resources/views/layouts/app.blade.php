@@ -66,7 +66,6 @@
         @yield('content')
     </main>
 
-    <script src="{{ asset('js/common.js') }}"></script>
     @yield('scripts')
 
 </body>

@@ -9,7 +9,7 @@ class AddressRequest extends FormRequest
     protected function getRedirectUrl()
     {
         $itemId = $this->route('item_id'); // URLから商品IDを取得
-        return url("/purchase/address/{$itemId}"); // 💡実際の住所変更画面のURLに合わせてください
+        return url("/purchase/address/{$itemId}");
     }
 
     public function authorize(): bool

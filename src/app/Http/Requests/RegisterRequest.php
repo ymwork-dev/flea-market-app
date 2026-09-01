@@ -34,9 +34,4 @@ class RegisterRequest extends FormRequest
             'password.confirmed' => 'パスワードと一致しません',
         ];
     }
-
-    protected function prepareForValidation()
-    {
-        // 特殊な処理が必要なければ、メッセージのキー指定だけで十分です。
-    }
 }

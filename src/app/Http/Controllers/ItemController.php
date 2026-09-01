@@ -11,15 +11,6 @@ class ItemController extends Controller
     public function index(ItemSearchRequest $request)
     {
         $user = Auth::user();
-        if ($user) {
-            if (!$user->hasVerifiedEmail()) {
-                return redirect()->route('verification.notice');
-            }
-
-            if (empty($user->postcode)) {
-                return redirect('/mypage/profile');
-            }
-        }
 
         $tab = $request->getTab();
         $keyword = $request->getKeyword();
@@ -52,18 +43,6 @@ class ItemController extends Controller
 
     public function show($item_id)
     {
-        $user = Auth::user();
-
-        if ($user) {
-            if (!$user->hasVerifiedEmail()) {
-                return redirect()->route('verification.notice');
-            }
-
-            if (empty($user->postcode)) {
-                return redirect('/mypage/profile');
-            }
-        }
-
         $item = Item::findOrFail($item_id);
 
         return view('item_detail', compact('item'));

@@ -7,6 +7,7 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Item;
 use App\Models\Order;
+use App\Services\StripeCheckoutService;
 
 class PurchaseTest extends TestCase
 {
@@ -26,10 +27,41 @@ class PurchaseTest extends TestCase
     {
         $user = $this->createFullAccessUser();
         $item = Item::factory()->create(['price' => 1000, 'is_sold' => false]);
-        $response = $this->actingAs($user)->get("/purchase/success/{$item->id}");
+
+        // 本物のStripeには問い合わせず、「決済は完了している」という
+        // 返事を返す偽物（モック）に差し替えてテストする
+        $this->mock(StripeCheckoutService::class, function ($mock) use ($item, $user) {
+            $mock->shouldReceive('retrieveSession')
+                ->once()
+                ->with('test_session_123')
+                ->andReturn((object) [
+                    'status' => 'complete',
+                    'metadata' => (object) [
+                        'item_id' => $item->id,
+                        'user_id' => $user->id,
+                    ],
+                ]);
+        });
+
+        $response = $this->actingAs($user)->get("/purchase/success/{$item->id}?session_id=test_session_123");
         $response->assertStatus(302);
         $this->assertEquals(1, $item->fresh()->is_sold);
         $this->assertDatabaseHas('orders', [
+            'user_id' => $user->id,
+            'item_id' => $item->id,
+        ]);
+    }
+
+    public function test_商品購入機能_session_idがない場合は購入できない(): void
+    {
+        $user = $this->createFullAccessUser();
+        $item = Item::factory()->create(['price' => 1000, 'is_sold' => false]);
+
+        $response = $this->actingAs($user)->get("/purchase/success/{$item->id}");
+
+        $response->assertStatus(403);
+        $this->assertEquals(0, $item->fresh()->is_sold);
+        $this->assertDatabaseMissing('orders', [
             'user_id' => $user->id,
             'item_id' => $item->id,
         ]);

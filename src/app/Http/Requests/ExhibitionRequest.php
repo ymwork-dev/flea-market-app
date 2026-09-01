@@ -16,7 +16,9 @@ class ExhibitionRequest extends FormRequest
         return [
             'name'        => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'max:255'],
-            'img_url'     => ['required', 'image', 'mimes:jpeg,png', 'max:2048'],
+            // 編集(PUT)の時は画像を選び直さなくてもよいので nullable、
+            // 新規出品(POST)の時は必須のままにする
+            'img_url'     => [$this->isMethod('put') ? 'nullable' : 'required', 'image', 'mimes:jpeg,png', 'max:2048'],
             'category_ids'    => ['required'],
             'condition'   => ['required'],
             'brand'       => ['nullable', 'string', 'max:255'],

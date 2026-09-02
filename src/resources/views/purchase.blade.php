@@ -34,7 +34,7 @@
             <hr>
 
             <div class="selection-section">
-                <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="section-header">
                     <h2>配送先</h2>
                     <a href="{{ route('purchase.address.edit', ['item_id' => $item->id]) }}" class="change-link">変更する</a>
                 </div>

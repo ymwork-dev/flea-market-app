@@ -13,6 +13,6 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadTranslationsFrom(base_path('src/lang'), 'default');
+        //
     }
 }

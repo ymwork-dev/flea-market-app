@@ -147,6 +147,10 @@
     margin-top: 60px;
 }
 
+.current-image-preview {
+    max-width: 200px;
+}
+
 .error-list {
     color: #ff5a5f;
     list-style: none;

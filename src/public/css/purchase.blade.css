@@ -98,6 +98,12 @@ hr {
     cursor: not-allowed;
 }
 
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .selection-section h2 {
     font-size: 18px;
     margin-bottom: 15px;

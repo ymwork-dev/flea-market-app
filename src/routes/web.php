@@ -33,8 +33,10 @@ Route::middleware(['auth', 'verified', 'ensure.profile.completed'])->group(funct
     Route::get('/purchase/{item_id}', [PurchaseController::class, 'showPurchasePage'])->name('purchase.show');
     Route::post('/purchase/{item_id}', [PurchaseController::class, 'purchase'])->name('purchase.store');
     Route::get('/purchase/success/{item_id}', [PurchaseController::class, 'success'])->name('purchase.success');
+    Route::post('/item/{item_id}/ship', [PurchaseController::class, 'ship'])->name('item.ship');
 
     Route::post('/comment/{item_id}/comment', [CommentController::class, 'storeComment'])->name('comment.store');
+    Route::post('/comment/{item_id}/comment/{comment_id}/reply', [CommentController::class, 'storeReply'])->name('comment.reply');
 
     Route::post('/like/{item_id}/like', [LikeController::class, 'toggleLike'])->name('like.toggle');
 

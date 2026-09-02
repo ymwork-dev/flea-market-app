@@ -19,7 +19,7 @@
             </div>
             <label class="image-select-btn">
                 画像を選択する
-                <input type="file" name="image" id="image-input" style="display: none;" accept="image/*">
+                <input type="file" name="image" id="image-input" class="hidden" accept="image/*">
             </label>
         </div>
 
@@ -27,7 +27,7 @@
             <label for="name">ユーザー名</label>
             <input type="text" id="name" name="name" value="{{ old('name', auth()->user()->name) }}">
             @error('name')
-                <p style="color: red;">{{ $message }}</p>
+                <p class="error-message">{{ $message }}</p>
             @enderror
         </div>
 
@@ -36,7 +36,7 @@
             <input type="text" id="postcode" name="postcode" value="{{ old('postcode', auth()->user()->postcode) }}">
 
             @error('postcode')
-                <p style="color: red;">{{ $message }}</p>
+                <p class="error-message">{{ $message }}</p>
             @enderror
         </div>
 
@@ -44,7 +44,7 @@
             <label for="address">住所</label>
             <input type="text" id="address" name="address" value="{{ old('address', auth()->user()->address) }}">
             @error('address')
-                <p style="color: red;">{{ $message }}</p>
+                <p class="error-message">{{ $message }}</p>
             @enderror
         </div>
 
@@ -52,7 +52,7 @@
             <label for="building">建物名</label>
             <input type="text" id="building" name="building" value="{{ old('building', auth()->user()->building) }}">
             @error('building')
-                <p style="color: red;">{{ $message }}</p>
+                <p class="error-message">{{ $message }}</p>
             @enderror
         </div>
 

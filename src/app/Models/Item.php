@@ -32,4 +32,10 @@ class Item extends Model
     {
         return $this->belongsToMany(Category::class);
     }
+
+    // 商品が売れた時に作られる注文（1商品につき1件だけの想定）
+    public function order()
+    {
+        return $this->hasOne(Order::class);
+    }
 }

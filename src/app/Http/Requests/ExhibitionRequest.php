@@ -30,11 +30,15 @@ class ExhibitionRequest extends FormRequest
     {
         return [
             'name.required'        => '商品名を入力してください。',
+            'name.max'             => '商品名は255文字以内で入力してください。',
             'description.required' => '商品の説明を入力してください。',
             'description.max'      => '商品の説明は255文字以内で入力してください。',
             'img_url.required'     => '商品画像を選択してください。',
             'img_url.image'        => '画像ファイルを選択してください。',
             'img_url.mimes'        => '商品画像の拡張子は .jpeg もしくは .png のみ有効です。',
+            'img_url.max'          => '商品画像は2MB以内のファイルを選択してください。',
+            'img_url.uploaded'     => '商品画像のアップロードに失敗しました。ファイルサイズをご確認ください。',
+            'brand.max'            => 'ブランド名は255文字以内で入力してください。',
             'category_ids.required'    => '商品のカテゴリーを選択してください。',
             'condition.required'   => '商品の状態を選択してください。',
             'price.required'       => '販売価格を入力してください。',

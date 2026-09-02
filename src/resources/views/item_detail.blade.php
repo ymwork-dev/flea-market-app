@@ -20,7 +20,7 @@
         <div class="detail-actions">
             <div class="action-item">
                 <button type="button" class="like-button" id="like-btn" data-item-id="{{ $item->id }}">
-                    @if(Auth::check() && Auth::user()->likedItems->contains($item->id))
+                    @if($isLiked)
                         <img src="{{ asset('img/liked.png') }}" alt="いいね済み" class="heart-icon" id="heart-img">
                     @else
                         <img src="{{ asset('img/HeartLogo.png') }}" alt="いいね" class="heart-icon" id="heart-img">
@@ -35,22 +35,43 @@
             </div>
         </div>
 
-        @if(Auth::check() && Auth::id() === $item->user_id)
-            @if($item->is_sold)
-                <button class="btn-purchase is-sold" disabled style="background-color: #888; cursor: not-allowed;">売り切れました</button>
+        @if($isOwner && $item->is_sold)
+            @if($item->order->is_shipped)
+                <button class="btn-purchase is-sold" disabled>発送済みです</button>
             @else
-                <div class="owner-actions">
-                    <a href="{{ route('item.edit', ['item_id' => $item->id]) }}" class="btn-purchase">編集する</a>
-                    <form action="{{ route('item.destroy', ['item_id' => $item->id]) }}" method="POST"
-                        onsubmit="return confirm('本当に削除しますか？');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn-purchase" style="background-color: #888;">削除する</button>
-                    </form>
+                <form action="{{ route('item.ship', ['item_id' => $item->id]) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn-purchase">発送する</button>
+                </form>
+            @endif
+        @elseif($isOwner)
+            <div class="owner-actions">
+                <a href="{{ route('item.edit', ['item_id' => $item->id]) }}" class="btn-purchase">編集する</a>
+                <button type="button" class="btn-purchase btn-secondary js-delete-open">削除する</button>
+            </div>
+
+            {{-- 削除確認ポップアップ(ブラウザ標準のconfirm()は使わず、独自デザインで表示する) --}}
+            <div id="delete-modal" class="modal">
+                <div class="modal-content">
+                    <p class="modal-message">本当にこの商品を削除しますか？</p>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-modal-cancel js-delete-cancel">キャンセル</button>
+                        <form action="{{ route('item.destroy', ['item_id' => $item->id]) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn-modal-delete">削除する</button>
+                        </form>
+                    </div>
                 </div>
+            </div>
+        @elseif($isBuyer)
+            @if($item->order->is_shipped)
+                <button class="btn-purchase is-sold" disabled>発送済みです</button>
+            @else
+                <button class="btn-purchase is-sold" disabled>発送準備中です</button>
             @endif
         @elseif($item->is_sold)
-            <button class="btn-purchase is-sold" disabled style="background-color: #888; cursor: not-allowed;">売り切れました</button>
+            <button class="btn-purchase is-sold" disabled>売り切れました</button>
         @else
             <a href="/purchase/{{ $item->id }}" class="btn-purchase">購入手続きへ</a>
         @endif
@@ -84,12 +105,12 @@
 
         <div class="detail-comments">
             <h2 class="section-title">コメント({{ $item->comments->count() }})</h2>
-            @foreach($item->comments as $comment)
+            @foreach($comments as $comment)
                 <div class="comment-item">
                     <div class="comment-user">
                         <div class="user-icon">
                             @if($comment->user->img_url)
-                                <img src="{{ asset('storage/' . $comment->user->img_url) }}" alt="ユーザー画像" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                                <img src="{{ asset('storage/' . $comment->user->img_url) }}" alt="ユーザー画像">
                             @endif
                         </div>
                         <span class="user-name">{{ $comment->user->name }}</span>
@@ -97,6 +118,36 @@
                     <div class="comment-text">
                         {{ $comment->comment }}
                     </div>
+
+                    {{-- 出品者からの返信一覧 --}}
+                    @foreach($comment->replies as $reply)
+                        <div class="comment-reply">
+                            <div class="comment-user">
+                                <div class="user-icon">
+                                    @if($reply->user->img_url)
+                                        <img src="{{ asset('storage/' . $reply->user->img_url) }}" alt="ユーザー画像">
+                                    @endif
+                                </div>
+                                <span class="user-name">{{ $reply->user->name }}</span>
+                                <span class="reply-badge">出品者</span>
+                            </div>
+                            <div class="comment-text">
+                                {{ $reply->comment }}
+                            </div>
+                        </div>
+                    @endforeach
+
+                    {{-- 出品者本人だけが返信フォームを見られる(売却済みなら非表示) --}}
+                    @if($isOwner && !$item->is_sold)
+                        <form action="{{ route('comment.reply', ['item_id' => $item->id, 'comment_id' => $comment->id]) }}" method="POST" class="reply-form">
+                            @csrf
+                            <textarea name="comment" class="comment-textarea reply-textarea" placeholder="このコメントに返信する" maxlength="255">{{ old('comment') }}</textarea>
+                            @error('comment')
+                                <p class="error-message">{{ $message }}</p>
+                            @enderror
+                            <button type="submit" class="btn-comment-submit btn-reply-submit">返信する</button>
+                        </form>
+                    @endif
                 </div>
             @endforeach
         </div>
@@ -121,4 +172,7 @@
 </div>
 
 <script src="{{ asset('js/like.js') }}"></script>
+@if($isOwner)
+    <script src="{{ asset('js/delete-confirm.js') }}"></script>
+@endif
 @endsection

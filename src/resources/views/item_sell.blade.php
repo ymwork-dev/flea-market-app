@@ -5,11 +5,6 @@
 @endpush
 
 @section('content')
-@php
-    // $item がある（= edit()から来た）なら編集モード、無ければ新規出品モード
-    $isEdit = isset($item);
-@endphp
-
 <div class="sell-container">
     <h1 class="sell-title">{{ $isEdit ? '商品の編集' : '商品の出品' }}</h1>
 
@@ -35,7 +30,7 @@
 
             @if($isEdit && $item->img_url)
                 <div class="form-group-image">
-                    <img src="{{ asset('storage/' . $item->img_url) }}" alt="{{ $item->name }}" style="max-width: 200px;">
+                    <img src="{{ asset('storage/' . $item->img_url) }}" alt="{{ $item->name }}" class="current-image-preview">
                 </div>
             @endif
 

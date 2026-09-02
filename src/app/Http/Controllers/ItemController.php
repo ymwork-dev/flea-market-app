@@ -44,7 +44,21 @@ class ItemController extends Controller
     public function show($item_id)
     {
         $item = Item::findOrFail($item_id);
+        $user = Auth::user();
 
-        return view('item_detail', compact('item'));
+        // 自分が出品した商品か / 自分が買った商品か をここで判定し、
+        // ビューには結果だけを渡す（判定ロジックをビューに書かないため）
+        $isOwner = $user && $user->id === $item->user_id;
+        $isBuyer = $user && $item->order && $item->order->user_id === $user->id;
+        $isLiked = $user && $user->likedItems->contains($item->id);
+
+        // 返信(parent_idがある方)は除いた、質問コメントだけを取得する
+        // 各コメントの投稿者・返信・返信の投稿者もまとめて取得しておく(N+1問題防止)
+        $comments = $item->comments()
+            ->whereNull('parent_id')
+            ->with(['user', 'replies.user'])
+            ->get();
+
+        return view('item_detail', compact('item', 'isOwner', 'isBuyer', 'isLiked', 'comments'));
     }
 }

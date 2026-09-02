@@ -12,8 +12,9 @@ class SellController extends Controller
     public function sell()
     {
         $categories = Category::all();
+        $isEdit = false;
 
-        return view('item_sell', compact('categories'));
+        return view('item_sell', compact('categories', 'isEdit'));
     }
 
     public function store(ExhibitionRequest $request)
@@ -48,8 +49,9 @@ class SellController extends Controller
 
         $categories = Category::all();
         $selectedCategoryIds = $item->categories->pluck('id')->toArray();
+        $isEdit = true;
 
-        return view('item_sell', compact('item', 'categories', 'selectedCategoryIds'));
+        return view('item_sell', compact('item', 'categories', 'selectedCategoryIds', 'isEdit'));
     }
 
     public function update(ExhibitionRequest $request, $item_id)

@@ -116,6 +116,10 @@
     font-weight: bold;
 }
 
+.shipping-badge {
+    background-color: rgba(255, 152, 0, 0.85);
+}
+
 .product-name {
     font-size: 14px;
 }

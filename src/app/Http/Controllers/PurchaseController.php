@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Item;
-use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\PurchaseRequest;
 use App\Services\StripeCheckoutService;
@@ -53,66 +52,40 @@ class PurchaseController extends Controller
                 'quantity' => 1,
             ]],
             'mode' => 'payment',
+            // metadataには、Webhookが届いた時に注文を作るために必要な情報を入れておく。
+            // Webhookはブラウザのセッションと無関係にStripeのサーバーから直接届くので、
+            // sessionではなくmetadataに持たせておく必要がある。
             'metadata' => [
                 'item_id' => $item->id,
                 'user_id' => $user->id,
+                'postcode' => $user->postcode,
+                'address' => $user->address,
+                'building' => $user->building ?? '',
             ],
-            'success_url' => route('purchase.success', ['item_id' => $item->id]) . '?session_id={CHECKOUT_SESSION_ID}',
+            'success_url' => route('purchase.success', ['item_id' => $item->id]),
             'cancel_url'  => route('purchase.show', ['item_id' => $item->id]),
         ]);
-
-        session(['shipping_address' => [
-            'postcode' => $user->postcode,
-            'address'  => $user->address,
-            'building' => $user->building,
-        ]]);
 
         return redirect($session->url);
     }
 
-    public function success(Request $request, $item_id)
+    public function success($item_id)
     {
         $item = Item::findOrFail($item_id);
         $user = Auth::user();
 
-        // すでに購入済みなら、再アクセスされても二重に注文を作らない
-        if ($item->is_sold) {
+        // 「注文を作る」処理はWebhook(StripeWebhookController)側で行っている。
+        // カード払いはWebhookの方が先に届くことが多いので、ここでは
+        // すでに注文が出来ていれば購入完了メッセージを出すだけにする。
+        // (コンビニ払いのお客様は、実はこの画面には戻ってこない。詳しくは
+        //  Stripe公式ドキュメントの「Redirect to Stripe hosted voucher page」を参照)
+        $order = $item->order;
+
+        if ($order && $order->user_id === $user->id) {
             return redirect('/')->with('message', '商品を購入しました');
         }
 
-        $sessionId = $request->query('session_id');
-
-        if (!$sessionId) {
-            abort(403, '不正なアクセスです');
-        }
-
-        // Stripeに直接問い合わせて、本当に決済が完了しているか・
-        // 自分がこれから購入しようとしていた商品と一致しているかを確認する
-        $checkoutSession = $this->stripe->retrieveSession($sessionId);
-
-        if (
-            $checkoutSession->status !== 'complete' ||
-            (int) $checkoutSession->metadata->item_id !== (int) $item->id ||
-            (int) $checkoutSession->metadata->user_id !== (int) $user->id
-        ) {
-            abort(403, '決済が確認できませんでした');
-        }
-
-        $shipping = session('shipping_address');
-
-        $item->update(['is_sold' => true]);
-
-        Order::create([
-            'user_id'  => $user->id,
-            'item_id'  => $item->id,
-            'postcode' => $shipping['postcode'] ?? $user->postcode,
-            'address'  => $shipping['address'] ?? $user->address,
-            'building' => $shipping['building'] ?? $user->building,
-        ]);
-
-        session()->forget(['payment_method', 'shipping_address']);
-
-        return redirect('/')->with('message', '商品を購入しました');
+        return redirect('/');
     }
 
     public function ship($item_id)

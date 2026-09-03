@@ -20,7 +20,8 @@ class ProfileController extends Controller
                     ->get()
                     ->pluck('item');
         } else {
-            $items = $user->items()->get();
+            // order も一緒に読み込んでおき、発送済みかどうかをビューで判定できるようにする
+            $items = $user->items()->with('order')->get();
         }
 
         return view('mypage', compact('user','items', 'page'));

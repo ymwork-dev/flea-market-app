@@ -38,4 +38,11 @@ class Item extends Model
     {
         return $this->hasOne(Order::class);
     }
+
+    // 売れているのに、まだ発送していない商品かどうか
+    // $item->needs_shipping でアクセスできる(データベースに同名の列は無い)
+    public function getNeedsShippingAttribute(): bool
+    {
+        return $this->is_sold && $this->order && !$this->order->is_shipped;
+    }
 }

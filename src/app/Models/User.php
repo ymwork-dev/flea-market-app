@@ -47,4 +47,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(Item::class, 'orders', 'user_id', 'item_id');
     }
+
+    // 自分が出品した商品のうち、売れたけどまだ発送していないものの件数
+    public function unshippedOrdersCount(): int
+    {
+        return Order::whereHas('item', function ($query) {
+            $query->where('user_id', $this->id);
+        })->where('is_shipped', false)->count();
+    }
 }

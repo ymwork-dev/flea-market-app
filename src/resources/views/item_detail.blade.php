@@ -36,7 +36,9 @@
         </div>
 
         @if($isOwner && $item->is_sold)
-            @if($item->order->is_shipped)
+            @if($item->order->payment_status !== 'paid')
+                <button class="btn-purchase is-sold" disabled>支払い待ちです</button>
+            @elseif($item->order->is_shipped)
                 <button class="btn-purchase is-sold" disabled>発送済みです</button>
             @else
                 <form action="{{ route('item.ship', ['item_id' => $item->id]) }}" method="POST">
@@ -65,7 +67,9 @@
                 </div>
             </div>
         @elseif($isBuyer)
-            @if($item->order->is_shipped)
+            @if($item->order->payment_status !== 'paid')
+                <button class="btn-purchase is-sold" disabled>コンビニでのお支払いを完了してください</button>
+            @elseif($item->order->is_shipped)
                 <button class="btn-purchase is-sold" disabled>発送済みです</button>
             @else
                 <button class="btn-purchase is-sold" disabled>発送準備中です</button>

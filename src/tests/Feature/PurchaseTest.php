@@ -23,48 +23,51 @@ class PurchaseTest extends TestCase
         ]);
     }
 
-    public function test_商品購入機能_購入するボタンを押下すると購入が完了する(): void
+    public function test_商品購入機能_購入するボタンを押下するとStripeの決済ページに遷移する(): void
     {
+        $seller = $this->createFullAccessUser();
         $user = $this->createFullAccessUser();
-        $item = Item::factory()->create(['price' => 1000, 'is_sold' => false]);
+        $item = Item::factory()->create(['user_id' => $seller->id, 'price' => 1000, 'is_sold' => false]);
 
-        // 本物のStripeには問い合わせず、「決済は完了している」という
-        // 返事を返す偽物（モック）に差し替えてテストする
-        $this->mock(StripeCheckoutService::class, function ($mock) use ($item, $user) {
-            $mock->shouldReceive('retrieveSession')
+        // 本物のStripeには問い合わせず、偽物の決済ページURLを返す
+        $this->mock(StripeCheckoutService::class, function ($mock) {
+            $mock->shouldReceive('createSession')
                 ->once()
-                ->with('test_session_123')
-                ->andReturn((object) [
-                    'status' => 'complete',
-                    'metadata' => (object) [
-                        'item_id' => $item->id,
-                        'user_id' => $user->id,
-                    ],
-                ]);
+                ->andReturn((object) ['url' => 'https://checkout.stripe.com/test-session']);
         });
 
-        $response = $this->actingAs($user)->get("/purchase/success/{$item->id}?session_id=test_session_123");
-        $response->assertStatus(302);
-        $this->assertEquals(1, $item->fresh()->is_sold);
-        $this->assertDatabaseHas('orders', [
-            'user_id' => $user->id,
-            'item_id' => $item->id,
-        ]);
+        $response = $this->actingAs($user)
+            ->from("/purchase/{$item->id}")
+            ->post("/purchase/{$item->id}", ['payment_method' => 'カード支払い']);
+
+        $response->assertRedirect('https://checkout.stripe.com/test-session');
+        // この時点ではまだ注文は作られない(Webhookが届いてから作られるため)
+        $this->assertEquals(0, $item->fresh()->is_sold);
     }
 
-    public function test_商品購入機能_session_idがない場合は購入できない(): void
+    public function test_商品購入機能_注文が出来ていれば購入完了画面にメッセージが出る(): void
     {
         $user = $this->createFullAccessUser();
-        $item = Item::factory()->create(['price' => 1000, 'is_sold' => false]);
+        $item = Item::factory()->create(['is_sold' => true]);
+        Order::create(['user_id' => $user->id, 'item_id' => $item->id]);
 
+        // Webhookがすでに注文を作り終えている状態を想定
         $response = $this->actingAs($user)->get("/purchase/success/{$item->id}");
 
-        $response->assertStatus(403);
-        $this->assertEquals(0, $item->fresh()->is_sold);
-        $this->assertDatabaseMissing('orders', [
-            'user_id' => $user->id,
-            'item_id' => $item->id,
-        ]);
+        $response->assertRedirect('/');
+        $response->assertSessionHas('message', '商品を購入しました');
+    }
+
+    public function test_商品購入機能_注文がまだ出来ていなければメッセージは出ない(): void
+    {
+        $user = $this->createFullAccessUser();
+        $item = Item::factory()->create(['is_sold' => false]);
+
+        // コンビニ払いなどでWebhookがまだ届いていない状態を想定
+        $response = $this->actingAs($user)->get("/purchase/success/{$item->id}");
+
+        $response->assertRedirect('/');
+        $response->assertSessionMissing('message');
     }
 
     public function test_商品購入機能_購入した商品は商品一覧画面にてsoldと表示される(): void

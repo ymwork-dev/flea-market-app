@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
+use Stripe\Webhook;
 
 // Stripeへの問い合わせをこのクラスにまとめておくことで、
 // テストの時だけ本物のStripeの代わりに「偽物」に差し替えられるようにする。
@@ -22,8 +23,15 @@ class StripeCheckoutService
         return Session::create($params);
     }
 
-    public function retrieveSession(string $sessionId): object
+    // Webhookで届いたリクエストが、本当にStripeから送られたものかを
+    // 署名（$sigHeader）を使って確認する。改ざんされていたり、
+    // Stripe以外から送られた偽物のリクエストだとここで例外が発生する。
+    public function constructWebhookEvent(string $payload, string $sigHeader): object
     {
-        return Session::retrieve($sessionId);
+        return Webhook::constructEvent(
+            $payload,
+            $sigHeader,
+            config('services.stripe.webhook_secret')
+        );
     }
 }

@@ -61,6 +61,7 @@
     </header>
 
     @include('components.flash-message')
+    <x-shipping-notice />
 
     <main class="main">
         @yield('content')

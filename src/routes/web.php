@@ -7,6 +7,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StripeWebhookController;
 
 Route::middleware(['ensure.verified.profile'])->group(function () {
     Route::get('/', [ItemController::class, 'index'])->name('item.index');
@@ -45,6 +46,10 @@ Route::middleware(['auth', 'verified', 'ensure.profile.completed'])->group(funct
 
     Route::post('/purchase/payment/store-session', [PurchaseController::class, 'storePaymentSession']);
     });
+
+// Stripeから直接呼ばれるURL。ログインもCSRFトークンも持っていないので、
+// authミドルウェアのグループには入れない
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])->name('stripe.webhook');
 
 Route::get('/email/verify', function () {
     return view('auth.verify-email');

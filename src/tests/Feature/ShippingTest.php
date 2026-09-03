@@ -101,4 +101,31 @@ class ShippingTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('発送する');
     }
+
+    public function test_発送機能_コンビニ払いが未払いのうちは発送できない(): void
+    {
+        $seller = $this->createFullAccessUser();
+        $buyer = $this->createFullAccessUser();
+        $item = Item::factory()->create(['user_id' => $seller->id, 'is_sold' => true]);
+        Order::create(['user_id' => $buyer->id, 'item_id' => $item->id, 'payment_status' => 'unpaid']);
+
+        $response = $this->actingAs($seller)->get("/item/{$item->id}");
+
+        $response->assertStatus(200);
+        $response->assertSee('支払い待ちです');
+        $response->assertDontSee('発送する');
+    }
+
+    public function test_商品詳細_未払いの間は購入者に支払いを促す表示になる(): void
+    {
+        $seller = $this->createFullAccessUser();
+        $buyer = $this->createFullAccessUser();
+        $item = Item::factory()->create(['user_id' => $seller->id, 'is_sold' => true]);
+        Order::create(['user_id' => $buyer->id, 'item_id' => $item->id, 'payment_status' => 'unpaid']);
+
+        $response = $this->actingAs($buyer)->get("/item/{$item->id}");
+
+        $response->assertStatus(200);
+        $response->assertSee('コンビニでのお支払いを完了してください');
+    }
 }

@@ -29,7 +29,9 @@
             <a href="/item/{{ $item->id }}" class="product-card">
                 <div class="product-image-wrapper">
                     <img src="{{ asset('storage/' . $item->img_url) }}" alt="{{ $item->name }}">
-                    @if($item->is_sold)
+                    @if($item->needs_shipping)
+                        <span class="sold-badge shipping-badge">発送準備中</span>
+                    @elseif($item->is_sold)
                         <span class="sold-badge">Sold</span>
                     @endif
                 </div>

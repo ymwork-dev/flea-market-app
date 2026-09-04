@@ -24,9 +24,7 @@ class SellTest extends TestCase
 
         $responseGet = $this->actingAs($user)->get('/sell');
         $responseGet->assertStatus(200);
-        $category = new Category();
-        $category->name = 'ファッション';
-        $category->save();
+        $category = Category::create(['name' => 'ファッション']);
 
         Storage::fake('public');
         $file = UploadedFile::fake()->create('Armani_Mens_Clock.png', 100, 'image/png');

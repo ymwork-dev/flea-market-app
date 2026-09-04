@@ -17,4 +17,11 @@ class Order extends Model
     {
         return $this->belongsTo(Item::class);
     }
+
+    // この取引に対する評価（購入者が出品者に付けたもの）
+    // まだ評価されていなければ null になる
+    public function rating()
+    {
+        return $this->hasOne(Rating::class);
+    }
 }

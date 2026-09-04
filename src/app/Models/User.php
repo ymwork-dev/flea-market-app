@@ -55,4 +55,23 @@ class User extends Authenticatable implements MustVerifyEmail
             $query->where('user_id', $this->id);
         })->where('is_shipped', false)->count();
     }
+
+    // Ratingテーブルには item_id が無いので、'order.item' という書き方で
+    // Rating → Order → Item と2段階たどり、その先の Item.user_id で
+    // 「出品者ごとの評価」を絞り込んでいる。
+    // 出品者として、これまでに購入者から受け取った評価の件数
+    public function receivedRatingsCount(): int
+    {
+        return Rating::whereHas('order.item', function ($query) {
+            $query->where('user_id', $this->id);
+        })->count();
+    }
+
+    // 出品者として、これまでに購入者から受け取った評価の平均点(1件も無ければnull)
+    public function receivedRatingsAverage(): ?float
+    {
+        return Rating::whereHas('order.item', function ($query) {
+            $query->where('user_id', $this->id);
+        })->avg('score');
+    }
 }

@@ -105,6 +105,21 @@ class PurchaseController extends Controller
         return redirect()->route('item.show', ['item_id' => $item->id])->with('message', '発送手続きが完了しました');
     }
 
+    public function receive($item_id)
+    {
+        $item = Item::findOrFail($item_id);
+        $order = $item->order;
+
+        // この商品を買った本人以外は受け取り確認できない
+        abort_if(!$order || $order->user_id !== Auth::id(), 403);
+        // 発送される前に受け取り確認はできない
+        abort_if(!$order->is_shipped, 403);
+
+        $order->update(['is_received' => true]);
+
+        return redirect()->route('item.show', ['item_id' => $item->id])->with('message', '受け取り確認をしました');
+    }
+
     public function editAddress($item_id)
     {
         $item = Item::findOrFail($item_id);

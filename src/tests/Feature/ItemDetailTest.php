@@ -28,9 +28,7 @@ class ItemDetailTest extends TestCase
             'img_url' => 'Rolax+Mens+Clock.jpg'
         ]);
 
-        $category = new Category();
-        $category->name = 'テストカテゴリ';
-        $category->save();
+        $category = Category::create(['name' => 'テストカテゴリ']);
 
         if (method_exists($item, 'categories')) {
             $item->categories()->attach($category->id);
@@ -70,17 +68,9 @@ class ItemDetailTest extends TestCase
             'img_url' => 'amazonaws.com'
         ]);
 
-        $category1 = new Category();
-        $category1->name = 'ファッション';
-        $category1->save();
-
-        $category2 = new Category();
-        $category2->name = 'メンズ';
-        $category2->save();
-
-        $category3 = new Category();
-        $category3->name = 'アウター';
-        $category3->save();
+        $category1 = Category::create(['name' => 'ファッション']);
+        $category2 = Category::create(['name' => 'メンズ']);
+        $category3 = Category::create(['name' => 'アウター']);
 
         if (method_exists($item, 'categories')) {
             $item->categories()->attach([$category1->id, $category2->id, $category3->id]);

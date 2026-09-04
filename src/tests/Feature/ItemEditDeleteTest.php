@@ -25,9 +25,7 @@ class ItemEditDeleteTest extends TestCase
     {
         $user = $this->createFullAccessUser();
         $item = Item::factory()->create(['user_id' => $user->id, 'is_sold' => false]);
-        $category = new Category();
-        $category->name = 'ファッション';
-        $category->save();
+        $category = Category::create(['name' => 'ファッション']);
 
         $response = $this->actingAs($user)->put("/sell/{$item->id}", [
             'name'         => '編集後の商品名',

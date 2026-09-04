@@ -76,7 +76,7 @@ class ShippingTest extends TestCase
         $response->assertSee('発送準備中です');
     }
 
-    public function test_商品詳細_発送済みなら購入者にもその表示になる(): void
+    public function test_商品詳細_発送済みなら購入者には受け取りましたボタンが表示される(): void
     {
         $seller = $this->createFullAccessUser();
         $buyer = $this->createFullAccessUser();
@@ -86,7 +86,7 @@ class ShippingTest extends TestCase
         $response = $this->actingAs($buyer)->get("/item/{$item->id}");
 
         $response->assertStatus(200);
-        $response->assertSee('発送済みです');
+        $response->assertSee('受け取りました');
     }
 
     public function test_商品詳細_出品者本人には発送するボタンが表示される(): void

@@ -28,6 +28,7 @@ erDiagram
     ITEMS ||--o{ COMMENTS : ""
     ITEMS ||--o{ CATEGORY_ITEM : ""
     ITEMS ||--o| ORDERS : ""
+    ORDERS ||--o| RATINGS : ""
     CATEGORIES ||--o{ CATEGORY_ITEM : ""
     COMMENTS ||--o{ COMMENTS : ""
 
@@ -52,8 +53,18 @@ erDiagram
         string address
         string building
         boolean is_shipped
+        boolean is_received
         string payment_status
         string stripe_session_id
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    RATINGS {
+        bigint id PK
+        bigint order_id FK
+        tinyint score
+        text comment
         timestamp created_at
         timestamp updated_at
     }
@@ -248,7 +259,8 @@ docker compose exec php php artisan test
 - **コメント機能**（商品詳細画面での出品者への質問投稿、出品者からの返信）
 - **商品購入機能**（Stripe決済連携によるクレジットカード支払いとコンビニ支払いの選択、コンビニ払いはStripe Webhookによる入金確認）
 - **発送管理機能**（購入された商品の発送手続き、発送状況に応じた画面表示の切り替え）
-- **メール通知機能**（商品が購入された時に出品者へ通知メールを送信）
+- **受け取り確認・評価機能**（購入者による商品の受け取り確認、出品者への評価投稿、商品詳細画面での出品者の平均評価表示）
+- **メール通知機能**（商品が購入された時、およびコンビニ払いの入金が確認できた時に、出品者へ通知メールを送信）
 
 ## APIエンドポイント一覧
 
@@ -272,6 +284,8 @@ docker compose exec php php artisan test
 | POST | /purchase/{item_id} | 商品購入処理（Stripe決済実行） |
 | GET | /purchase/success/{item_id} | 商品購入完了画面 |
 | POST | /item/{item_id}/ship | 発送済みにする処理（出品者のみ） |
+| POST | /item/{item_id}/receive | 受け取り確認処理（購入者のみ） |
+| POST | /item/{item_id}/rating | 出品者への評価投稿処理（購入者のみ） |
 | POST | /comment/{item_id}/comment | 商品へのコメント投稿処理 |
 | POST | /comment/{item_id}/comment/{comment_id}/reply | コメントへの返信処理（出品者のみ） |
 | POST | /like/{item_id}/like | 商品へのいいね！登録・解除処理 |

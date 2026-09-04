@@ -8,6 +8,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StripeWebhookController;
+use App\Http\Controllers\RatingController;
 
 Route::middleware(['ensure.verified.profile'])->group(function () {
     Route::get('/', [ItemController::class, 'index'])->name('item.index');
@@ -35,6 +36,8 @@ Route::middleware(['auth', 'verified', 'ensure.profile.completed'])->group(funct
     Route::post('/purchase/{item_id}', [PurchaseController::class, 'purchase'])->name('purchase.store');
     Route::get('/purchase/success/{item_id}', [PurchaseController::class, 'success'])->name('purchase.success');
     Route::post('/item/{item_id}/ship', [PurchaseController::class, 'ship'])->name('item.ship');
+    Route::post('/item/{item_id}/receive', [PurchaseController::class, 'receive'])->name('item.receive');
+    Route::post('/item/{item_id}/rating', [RatingController::class, 'store'])->name('rating.store');
 
     Route::post('/comment/{item_id}/comment', [CommentController::class, 'storeComment'])->name('comment.store');
     Route::post('/comment/{item_id}/comment/{comment_id}/reply', [CommentController::class, 'storeReply'])->name('comment.reply');

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Item;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\PurchaseRequest;
+use App\Http\Requests\RatingRequest;
+use App\Notifications\ItemShippedNotification;
 use App\Services\StripeCheckoutService;
 
 class PurchaseController extends Controller
@@ -101,11 +103,17 @@ class PurchaseController extends Controller
         abort_if(!$order, 404);
 
         $order->update(['is_shipped' => true]);
+        // 購入者に「発送されました」というメールを送る
+        $order->user->notify(new ItemShippedNotification($item));
 
         return redirect()->route('item.show', ['item_id' => $item->id])->with('message', '発送手続きが完了しました');
     }
 
-    public function receive($item_id)
+    // 「受け取りました」ボタンは評価の入力とセットになっている。
+    // RatingRequestが先にscore/commentのバリデーションを行うので、
+    // 評価が未入力のまま送信された場合はここに処理が来る前にエラーになり、
+    // 受け取り確認も評価も保存されない(中途半端な状態にならない)。
+    public function receive(RatingRequest $request, $item_id)
     {
         $item = Item::findOrFail($item_id);
         $order = $item->order;
@@ -114,10 +122,16 @@ class PurchaseController extends Controller
         abort_if(!$order || $order->user_id !== Auth::id(), 403);
         // 発送される前に受け取り確認はできない
         abort_if(!$order->is_shipped, 403);
+        // すでに受け取り確認済みの取引を、もう一度受け取り+評価することはできない
+        abort_if($order->is_received, 403);
 
         $order->update(['is_received' => true]);
+        $order->rating()->create([
+            'score' => $request->score,
+            'comment' => $request->comment,
+        ]);
 
-        return redirect()->route('item.show', ['item_id' => $item->id])->with('message', '受け取り確認をしました');
+        return redirect()->route('item.show', ['item_id' => $item->id])->with('message', '受け取り評価を送信しました');
     }
 
     public function editAddress($item_id)

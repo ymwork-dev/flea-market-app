@@ -3,10 +3,12 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Item;
 use App\Models\Order;
+use App\Notifications\ItemShippedNotification;
 
 class ShippingTest extends TestCase
 {
@@ -35,6 +37,20 @@ class ShippingTest extends TestCase
             'item_id' => $item->id,
             'is_shipped' => 1,
         ]);
+    }
+
+    public function test_発送機能_発送すると購入者に発送済みメールが届く(): void
+    {
+        Notification::fake();
+
+        $seller = $this->createFullAccessUser();
+        $buyer = $this->createFullAccessUser();
+        $item = Item::factory()->create(['user_id' => $seller->id, 'is_sold' => true]);
+        Order::create(['user_id' => $buyer->id, 'item_id' => $item->id]);
+
+        $this->actingAs($seller)->post("/item/{$item->id}/ship");
+
+        Notification::assertSentTo($buyer, ItemShippedNotification::class);
     }
 
     public function test_発送機能_出品者以外は発送操作できない(): void
@@ -76,7 +92,7 @@ class ShippingTest extends TestCase
         $response->assertSee('発送準備中です');
     }
 
-    public function test_商品詳細_発送済みなら購入者には受け取りましたボタンが表示される(): void
+    public function test_商品詳細_発送済みなら購入者には受け取り評価フォームが表示される(): void
     {
         $seller = $this->createFullAccessUser();
         $buyer = $this->createFullAccessUser();
@@ -86,7 +102,7 @@ class ShippingTest extends TestCase
         $response = $this->actingAs($buyer)->get("/item/{$item->id}");
 
         $response->assertStatus(200);
-        $response->assertSee('受け取りました');
+        $response->assertSee('受取と評価を完了する');
     }
 
     public function test_商品詳細_出品者本人には発送するボタンが表示される(): void

@@ -18,8 +18,14 @@ class ItemSeeder extends Seeder
      */
     public function run(): void
     {
+        // 外部キー制約を無効にしている間はItemが消えてもordersなどが連動削除されないので、
+        // item_idに紐づくテーブルはここで手動ですべて空にしておく
         Schema::disableForeignKeyConstraints();
         DB::table('category_item')->truncate();
+        DB::table('ratings')->truncate();
+        DB::table('orders')->truncate();
+        DB::table('likes')->truncate();
+        DB::table('comments')->truncate();
         Item::truncate();
         Schema::enableForeignKeyConstraints();
 

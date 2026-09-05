@@ -83,10 +83,35 @@
             @elseif(!$isShipped)
                 <button class="btn-purchase is-sold" disabled>発送準備中です</button>
             @elseif(!$isReceived)
-                <form action="{{ route('item.receive', ['item_id' => $item->id]) }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn-purchase">受け取りました</button>
-                </form>
+                {{-- 「受け取りました」は評価とセットの1つのフォーム。評価を入力しないと送信できない --}}
+                <div class="rating-form">
+                    <h2 class="section-title">受け取り評価</h2>
+                    <form action="{{ route('item.receive', ['item_id' => $item->id]) }}" method="POST">
+                        @csrf
+                        <div>
+                            <label for="score">評価</label>
+                            <select name="score" id="score">
+                                <option value="">選択してください</option>
+                                <option value="5">5(とても良い)</option>
+                                <option value="4">4(良い)</option>
+                                <option value="3">3(普通)</option>
+                                <option value="2">2(良くない)</option>
+                                <option value="1">1(悪い)</option>
+                            </select>
+                            @error('score')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="comment">コメント(任意)</label>
+                            <textarea name="comment" id="comment"></textarea>
+                            @error('comment')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <button type="submit" class="btn-purchase">受取と評価を完了する</button>
+                    </form>
+                </div>
             @else
                 <button class="btn-purchase is-sold" disabled>取引が完了しました</button>
             @endif
@@ -96,43 +121,16 @@
             <a href="/purchase/{{ $item->id }}" class="btn-purchase">購入手続きへ</a>
         @endif
 
-        {{-- 購入者が受け取り確認をした後、出品者を評価するためのフォーム(未評価の時だけ表示) --}}
-        @if($canRate)
-            <div class="rating-form">
-                <h2 class="section-title">出品者を評価する</h2>
-                <form action="{{ route('rating.store', ['item_id' => $item->id]) }}" method="POST">
-                    @csrf
-                    <div>
-                        <label for="score">評価</label>
-                        <select name="score" id="score">
-                            <option value="">選択してください</option>
-                            <option value="5">5(とても良い)</option>
-                            <option value="4">4(良い)</option>
-                            <option value="3">3(普通)</option>
-                            <option value="2">2(良くない)</option>
-                            <option value="1">1(悪い)</option>
-                        </select>
-                        @error('score')
-                            <div class="error-message">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div>
-                        <label for="comment">コメント(任意)</label>
-                        <textarea name="comment" id="comment"></textarea>
-                        @error('comment')
-                            <div class="error-message">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <button type="submit" class="btn-purchase">評価を送信する</button>
-                </form>
-            </div>
-        @endif
-
         {{-- 購入者が付けた評価は、購入者本人にも出品者にも見えるようにする --}}
         @if($rating && ($isBuyer || $isOwner))
             <div class="rating-result">
                 <h2 class="section-title">{{ $isOwner ? '購入者からの評価' : 'あなたが送った評価' }}</h2>
-                <p>評価: {{ $rating->score }} / 5</p>
+                <p class="rating-stars">
+                    評価:
+                    @for ($i = 1; $i <= 5; $i++)
+                        <span class="{{ $i <= $rating->score ? 'star-filled' : 'star-empty' }}">★</span>
+                    @endfor
+                </p>
                 @if($rating->comment)
                     <p>{{ $rating->comment }}</p>
                 @endif

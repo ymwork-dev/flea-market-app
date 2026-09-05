@@ -57,8 +57,6 @@ class ItemController extends Controller
         $isShipped = $item->order && $item->order->is_shipped;
         $isReceived = $item->order && $item->order->is_received;
         $rating = $item->order ? $item->order->rating : null;
-        // 購入者本人が、受け取り確認済みで、まだ評価していない場合だけ評価フォームを出す
-        $canRate = $isBuyer && $isReceived && !$rating;
 
         // 出品者がこれまでに受け取った評価の件数・平均点(商品詳細に「出品者情報」として表示する)
         $sellerRatingsCount = $item->user->receivedRatingsCount();
@@ -73,7 +71,7 @@ class ItemController extends Controller
 
         return view('item_detail', compact(
             'item', 'isOwner', 'isBuyer', 'isLiked', 'comments',
-            'isPaid', 'isShipped', 'isReceived', 'rating', 'canRate',
+            'isPaid', 'isShipped', 'isReceived', 'rating',
             'sellerRatingsCount', 'sellerRatingsAverage'
         ));
     }

@@ -227,6 +227,15 @@
     margin-top: 20px;
 }
 
+/* 評価スコアの★を、もらった点数の分だけ黒く、残りをグレーにする */
+.rating-stars .star-filled {
+    color: #000;
+}
+
+.rating-stars .star-empty {
+    color: #ccc;
+}
+
 .detail-description p {
     line-height: 1.6;
     color: #333;

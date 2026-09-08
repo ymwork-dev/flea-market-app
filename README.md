@@ -121,6 +121,15 @@ erDiagram
 
 http://localhost:8082/
 
+## デモ用アカウント
+
+会員登録をしなくても、以下のアカウントでログインして一通りの機能を試せます（ログイン画面にも表示されます）。
+
+| 用途 | メールアドレス | パスワード |
+|---|---|---|
+| 出品者用 | test@example.com | password |
+| 購入者用 | demo@example.com | demo1234 |
+
 ## 動作環境
 
 - OS: Windows 11 (WSL2 / Ubuntu)
@@ -168,20 +177,12 @@ http://localhost:8082/
     ```
 
     **コンビニ払いの入金確認（Webhook）**
-    コンビニ払いは決済手続き完了時点ではまだ入金されておらず、実際の入金確認はStripeからのWebhook通知で行っています。ローカル環境でこれを試すには [Stripe CLI](https://docs.stripe.com/stripe-cli) が必要です。
+    コンビニ払いは決済手続き完了時点ではまだ入金されておらず、実際の入金確認はStripeからのWebhook通知で行っています。この転送は`docker-compose.yml`の`stripe-cli`サービスが自動で行うので、手動で`stripe listen`を起動する必要はありません（`docker compose up -d`で一緒に起動します）。上の`STRIPE_SECRET_KEY`が正しく設定されていれば、`.env`の`STRIPE_WEBHOOK_SECRET`もそのままで動作します。
+
+    転送が正しく行われているかは、以下のコマンドでログを確認できます。
 
     ```bash
-    # Stripe CLIをインストール後、ログイン
-    stripe login
-
-    # Webhookをローカルのコンテナへ転送する(起動したままにしておく)
-    stripe listen --forward-to localhost:8082/stripe/webhook
-    ```
-
-    起動時に表示される `whsec_...` という値を、.env の `STRIPE_WEBHOOK_SECRET` に設定してください。
-
-    ```text
-    STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxx
+    docker compose logs -f stripe-cli
     ```
 
 5. **ディレクトリの移動（Docker設定階層へ戻る）**
@@ -260,7 +261,7 @@ docker compose exec php php artisan test
 - **商品購入機能**（Stripe決済連携によるクレジットカード支払いとコンビニ支払いの選択、コンビニ払いはStripe Webhookによる入金確認）
 - **発送管理機能**（購入された商品の発送手続き、発送状況に応じた画面表示の切り替え）
 - **受け取り確認・評価機能**（購入者による商品の受け取り確認、出品者への評価投稿、商品詳細画面での出品者の平均評価表示）
-- **メール通知機能**（商品が購入された時・コンビニ払いの入金が確認できた時に出品者へ、商品が発送された時に購入者へ、それぞれ通知メールを送信）
+- **メール通知機能**（商品が購入された時・コンビニ払いの入金が確認できた時・商品にコメントが届いた時に出品者へ、商品が発送された時に購入者へ、それぞれ通知メールを送信）
 
 ## APIエンドポイント一覧
 

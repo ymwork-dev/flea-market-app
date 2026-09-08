@@ -7,6 +7,13 @@
 @section('content')
 <div class="auth-container">
     <h1 class="auth-title">ログイン</h1>
+
+    <div class="demo-account-notice">
+        <p class="demo-account-notice__title">デモ用アカウント</p>
+        <p>【出品者用】test@example.com / password</p>
+        <p>【購入者用】demo@example.com / demo1234</p>
+    </div>
+
     <form action="{{ route('login') }}" method="POST" class="auth-form"novalidate>
         @csrf
 

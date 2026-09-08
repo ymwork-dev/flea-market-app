@@ -30,7 +30,7 @@
 
 .btn-submit {
     width: 100%;
-    background-color: #ff4d4b;
+    background-color: #4A7A5D;
     color: #fff;
     border: none;
     padding: 12px;
@@ -45,7 +45,7 @@
 }
 
 .error-message {
-    color: #ff4d4b;
+    color: #D64545;
     font-size: 12px;
     margin-top: 5px;
     display: block;

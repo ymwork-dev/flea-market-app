@@ -3,7 +3,6 @@
     margin: 40px auto;
     padding: 0 20px;
     color: #333;
-    font-family: "Noto Sans JP", sans-serif;
 }
 
 .sell-title {
@@ -46,9 +45,9 @@
 .image-select-label {
     display: inline-block;
     padding: 10px 25px;
-    border: 1px solid #ff5a5f;
+    border: 1px solid #4A7A5D;
     border-radius: 4px;
-    color: #ff5a5f;
+    color: #4A7A5D;
     cursor: pointer;
     background: #fff;
     font-weight: bold;
@@ -65,9 +64,9 @@
 .category-label {
     display: inline-block;
     padding: 8px 20px;
-    border: 1px solid #ffb2b5;
+    border: 1px solid #A9C7B4;
     border-radius: 25px;
-    color: #ff5a5f;
+    color: #4A7A5D;
     cursor: pointer;
     font-size: 14px;
     transition: all 0.2s;
@@ -78,9 +77,9 @@
 }
 
 .category-label:has(input:checked) {
-    background-color: #ff5a5f;
+    background-color: #4A7A5D;
     color: #fff;
-    border-color: #ff5a5f;
+    border-color: #4A7A5D;
 }
 
 .form-input, .form-select, .form-textarea {
@@ -137,7 +136,7 @@
 .sell-btn {
     width: 100%;
     padding: 18px;
-    background-color: #ff5a5f;
+    background-color: #4A7A5D;
     color: white;
     border: none;
     border-radius: 4px;
@@ -152,7 +151,7 @@
 }
 
 .error-list {
-    color: #ff5a5f;
+    color: #D64545;
     list-style: none;
     padding: 0;
     margin-bottom: 20px;

@@ -3,9 +3,11 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Item;
+use App\Notifications\CommentPostedNotification;
 
 class CommentTest extends TestCase
 {
@@ -38,6 +40,35 @@ class CommentTest extends TestCase
         ]);
 
         $this->assertEquals(1, $item->comments()->count());
+    }
+
+    public function test_コメント送信機能_コメントすると出品者に通知メールが届く(): void
+    {
+        Notification::fake();
+
+        $seller = $this->createFullAccessUser();
+        $buyer = $this->createFullAccessUser();
+        $item = Item::factory()->create(['user_id' => $seller->id]);
+
+        $this->actingAs($buyer)->post("/comment/{$item->id}/comment", [
+            'comment' => '質問があります'
+        ]);
+
+        Notification::assertSentTo($seller, CommentPostedNotification::class);
+    }
+
+    public function test_コメント送信機能_自分の商品に自分でコメントしても通知は届かない(): void
+    {
+        Notification::fake();
+
+        $seller = $this->createFullAccessUser();
+        $item = Item::factory()->create(['user_id' => $seller->id]);
+
+        $this->actingAs($seller)->post("/comment/{$item->id}/comment", [
+            'comment' => '自分の商品への補足です'
+        ]);
+
+        Notification::assertNothingSent();
     }
 
     public function test_コメント送信機能_ログイン前のユーザーはコメントを送信できない(): void

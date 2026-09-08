@@ -95,7 +95,7 @@
 
 .btn-purchase {
     display: block;
-    background-color: #ff5a5f;
+    background-color: #4A7A5D;
     color: white;
     text-align: center;
     padding: 15px;
@@ -174,7 +174,8 @@
 }
 
 .btn-modal-delete {
-    background-color: #ff5a5f;
+    /* 削除は取り消しがきかない操作なので、テーマカラーではなく警告色(赤)にする */
+    background-color: #D64545;
     color: #fff;
 }
 
@@ -276,7 +277,7 @@
 }
 
 .reply-badge {
-    background-color: #ff5a5f;
+    background-color: #4A7A5D;
     color: #fff;
     font-size: 12px;
     padding: 2px 8px;
@@ -339,7 +340,7 @@
 
 .btn-comment-submit {
     display: block;
-    background-color: #ff5a5f;
+    background-color: #4A7A5D;
     color: white;
     border: none;
     padding: 15px;
@@ -349,16 +350,16 @@
 }
 
 .btn-comment-submit:hover {
-    background-color: #e54d52;
+    background-color: #3A6249;
 }
 
 .sold-out-message {
-    color: #ff5a5f;
+    color: #D64545;
     font-weight: bold;
 }
 
 .error-message {
-    color: #ff5a5f;
+    color: #D64545;
     margin-bottom: 10px;
 }
 

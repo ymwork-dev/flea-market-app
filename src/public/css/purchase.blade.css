@@ -83,7 +83,7 @@ hr {
 .purchase-button {
     width: 100%;
     padding: 18px;
-    background-color: #ff5a5f;
+    background-color: #4A7A5D;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -94,7 +94,8 @@ hr {
 }
 
 .purchase-button:disabled {
-    background-color: #ffb2b5;
+    /* 他ページの無効ボタン(.btn-purchase.is-sold)と同じグレーに合わせる */
+    background-color: #888;
     cursor: not-allowed;
 }
 

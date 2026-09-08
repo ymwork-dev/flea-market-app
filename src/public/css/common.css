@@ -1,13 +1,17 @@
 body {
     margin: 0;
-    font-family: 'Inter', sans-serif;
+    /* 英数字はInter、日本語はHiragino/Meiryo系で表示されるように、
+       サイト全体でこのフォントの並びに統一する(以前はページごとに別指定があった) */
+    font-family: 'Inter', "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", Meiryo, sans-serif;
     color: #333;
 }
 
 .header {
-    background-color: #000;
-    color: #fff;
+    background-color: #F5F1E8;
+    color: #333;
     padding: 15px 40px;
+    /* 下端をborderで一直線に区切るのではなく、薄い影でぼかして柔らかい境目にする */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .main-container {
@@ -37,7 +41,7 @@ body {
 .header__logo-text {
     font-size: 34px;
     font-weight: bold;
-    color: #ffffff;
+    color: #2F4D3A;
     text-decoration: none;
     letter-spacing: 1px;
     white-space: nowrap;
@@ -76,7 +80,7 @@ body {
 }
 
 .header__nav-link {
-    color: #fff;
+    color: #333;
     text-decoration: none;
     background: none;
     border: none;
@@ -87,8 +91,10 @@ body {
 }
 
 .header__sell-btn {
-    background-color: #fff;
-    color: #000;
+    /* 背景がアイボリー(明るい色)になったので、白背景のままだとボタンが
+       見えなくなってしまう。テーマカラーで塗りつぶして目立たせる */
+    background-color: #4A7A5D;
+    color: #fff;
     padding: 5px 15px;
     border-radius: 4px;
     text-decoration: none;
@@ -125,5 +131,95 @@ body {
     .header__inner {
         flex-direction: column;
         gap: 10px;
+    }
+}
+
+/* ここから下は、商品一覧ページ(index.css)とマイページ(mypage.css)の両方で
+   ほぼ同じ内容が別々に書かれていたため、共通化してここに1つだけ置く。
+   タブ切り替え・商品カードの並びを直したい時は、ここを直せば両方に反映される */
+.index-tabs {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 30px;
+}
+
+.tab-item {
+    padding: 15px 30px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    font-size: 16px;
+    position: relative;
+    transition: color 0.3s;
+}
+
+.tab-item.active {
+    color: #4A7A5D;
+}
+
+.tab-item.active::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #4A7A5D;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 40px 20px;
+    padding: 20px;
+}
+
+.product-card {
+    text-decoration: none;
+    color: #333;
+}
+
+.product-image-wrapper {
+    aspect-ratio: 1 / 1;
+    /* 商品写真はどれも白背景なので、余白の色を白に合わせておくと
+       object-fit: contain で出来る余白が写真に馴染んで目立たなくなる */
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.product-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.product-name {
+    font-size: 14px;
+    margin: 0;
+}
+
+.sold-badge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* 売り切れは「注意」の意味合いなので、テーマカラー(緑)とは別のエラー色(赤)を使う */
+    background-color: #D64545;
+    color: white;
+    padding: 4px 12px;
+    font-weight: bold;
+    font-size: 14px;
+    z-index: 5;
+    border-bottom-right-radius: 4px;
+}
+
+@media (max-width: 600px) {
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }

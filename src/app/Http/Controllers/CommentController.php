@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Item;
+use App\Notifications\CommentPostedNotification;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CommentRequest;
 
@@ -16,10 +17,16 @@ class CommentController extends Controller
         }
 
         $item = Item::findOrFail($item_id);
-        $item->comments()->create([
+        $comment = $item->comments()->create([
             'user_id' => Auth::id(),
             'comment' => $request->comment,
         ]);
+
+        // 自分の商品に自分でコメントすることは無いはずだが、念のため
+        // 出品者本人がコメントした時は自分宛てに通知を送らないようにする
+        if ($item->user_id !== Auth::id()) {
+            $item->user->notify(new CommentPostedNotification($item, $comment->comment));
+        }
 
         return back()->with('message', 'コメントを投稿しました');
     }

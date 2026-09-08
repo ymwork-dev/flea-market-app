@@ -32,9 +32,9 @@ class ItemSeeder extends Seeder
         $user = User::where('email', 'test@example.com')->first();
 
         $categories = [
-            'ファッション', '家電', 'インテリア', 'レディース', 'メンズ',
-            'コスメ', '本', 'ゲーム', 'スポーツ', 'キッチン',
-            'ハンドメイド', 'アクセサリー', 'おもちゃ', 'ベビー・キッズ'
+            'ファッション', 'インテリア', 'レディース', 'メンズ',
+            'コスメ', 'スポーツ', 'ハンドメイド', 'アクセサリー',
+            'おもちゃ', 'ベビー・キッズ'
         ];
 
         foreach ($categories as $cat) {
@@ -43,96 +43,109 @@ class ItemSeeder extends Seeder
 
         $categoryMap = Category::pluck('id', 'name');
 
+        // 商品ごとに、付けるカテゴリーもここへ直接書いておく。
+        // (以前は商品名でカテゴリーを振り分けていたが、「デニムパンツ」のように
+        // 同じ名前の商品が複数あると正しく振り分けられなかったため)
         $items = [
             [
-                'name' => '腕時計',
-                'price' => 15000,
-                'brand' => 'Rolax',
-                'description' => 'スタイリッシュなデザインのメンズ腕時計',
-                'img_url' => 'items/腕時計.jpg',
+                'name' => 'スエードシューズ',
+                'price' => 16000,
+                'brand' => '',
+                'description' => 'メンズスエードシューズ',
+                'img_url' => 'items/メンズスエードシューズ.jpg',
                 'condition' => '良好',
                 'user_id' => $user->id,
+                'categories' => ['ファッション', 'メンズ'],
             ],
             [
-                'name' => 'HDD',
-                'price' => 5000,
-                'brand' => '西芝',
-                'description' => '高速で信頼性の高いハードディスク',
-                'img_url' => 'items/HDD.jpg',
+                'name' => 'デニムジャケット',
+                'price' => 15000,
+                'brand' => '',
+                'description' => 'メンズデニムジャケット',
+                'img_url' => 'items/メンズデニムジャケット.jpg',
                 'condition' => '目立った傷や汚れなし',
                 'user_id' => $user->id,
+                'categories' => ['ファッション', 'メンズ'],
             ],
             [
-                'name' => '玉ねぎ3束',
-                'price' => 300,
-                'brand' => 'なし',
-                'description' => '新鮮な玉ねぎ3束のセット',
-                'img_url' => 'items/玉ねぎ3束.jpg',
+                'name' => 'デニムパンツ',
+                'price' => 15000,
+                'brand' => '',
+                'description' => 'メンズデニムパンツ',
+                'img_url' => 'items/メンズデニムパンツ.jpg',
                 'condition' => 'やや傷や汚れあり',
                 'user_id' => $user->id,
+                'categories' => ['ファッション', 'メンズ'],
             ],
             [
-                'name' => '革靴',
-                'price' => 4000,
+                'name' => 'メンズパーカー',
+                'price' => 6000,
                 'brand' => '',
-                'description' => 'クラシックなデザインの革靴',
-                'img_url' => 'items/革靴.jpg',
+                'description' => 'メンズパーカー',
+                'img_url' => 'items/メンズパーカー.jpg',
                 'condition' => '状態が悪い',
                 'user_id' => $user->id,
+                'categories' => ['ファッション', 'メンズ'],
             ],
             [
-                'name' => 'ノートPC',
+                'name' => 'ベルト',
+                'price' => 5000,
+                'brand' => '',
+                'description' => 'メンズベルト',
+                'img_url' => 'items/メンズベルト.jpg',
+                'condition' => '良好',
+                'user_id' => $user->id,
+                'categories' => ['ファッション', 'メンズ'],
+            ],
+            [
+                'name' => 'スニーカー',
+                'price' => 8000,
+                'brand' => '',
+                'description' => 'レディーススニーカー',
+                'img_url' => 'items/レディーススニーカー.jpg',
+                'condition' => '目立った傷や汚れなし',
+                'user_id' => $user->id,
+                'categories' => ['ファッション', 'レディース'],
+            ],
+            [
+                'name' => 'ダウンコート',
                 'price' => 45000,
                 'brand' => '',
-                'description' => '高性能なノートパソコン',
-                'img_url' => 'items/ノートPC.jpg',
+                'description' => 'レディースダウンコート',
+                'img_url' => 'items/レディースダウンコート.jpg',
                 'condition' => '良好',
                 'user_id' => $user->id,
+                'categories' => ['ファッション', 'レディース'],
             ],
             [
-                'name' => 'マイク',
-                'price' => 8000,
-                'brand' => 'なし',
-                'description' => '高音質のレコーディング用マイク',
-                'img_url' => 'items/マイク.jpg',
+                'name' => 'デニムパンツ',
+                'price' => 7000,
+                'brand' => '',
+                'description' => 'レディースデニムパンツ',
+                'img_url' => 'items/レディースデニムパンツ.jpg',
                 'condition' => '目立った傷や汚れなし',
                 'user_id' => $user->id,
+                'categories' => ['ファッション', 'レディース'],
             ],
             [
-                'name' => 'ショルダーバッグ',
-                'price' => 3500,
+                'name' => 'トレンチコート',
+                'price' => 20000,
                 'brand' => '',
-                'description' => 'おしゃれなショルダーバッグ',
-                'img_url' => 'items/ショルダーバッグ.jpg',
-                'condition' => 'やや傷や汚れあり',
-                'user_id' => $user->id,
-            ],
-            [
-                'name' => 'タンブラー',
-                'price' => 500,
-                'brand' => 'なし',
-                'description' => '使いやすいタンブラー',
-                'img_url' => 'items/タンブラー.jpg',
-                'condition' => '状態が悪い',
-                'user_id' => $user->id,
-            ],
-            [
-                'name' => 'コーヒーミル',
-                'price' => 4000,
-                'brand' => 'Starbacks',
-                'description' => '手動のコーヒーミル',
-                'img_url' => 'items/コーヒーミル.jpg',
+                'description' => 'レディーストレンチコート',
+                'img_url' => 'items/レディーストレンチコート.jpg',
                 'condition' => '良好',
                 'user_id' => $user->id,
+                'categories' => ['ファッション', 'レディース'],
             ],
             [
-                'name' => 'メイクセット',
+                'name' => 'ニット',
                 'price' => 2500,
                 'brand' => '',
-                'description' => '便利なメイクアップセット',
-                'img_url' => 'items/メイクセット.jpg',
+                'description' => 'レディースニット',
+                'img_url' => 'items/レディースニット.jpg',
                 'condition' => '目立った傷や汚れなし',
                 'user_id' => $user->id,
+                'categories' => ['ファッション', 'レディース'],
             ],
         ];
 
@@ -142,6 +155,11 @@ class ItemSeeder extends Seeder
         }
 
         foreach ($items as $itemData) {
+            // categoriesはitemsテーブルのカラムでは無いので、
+            // Item::create()に渡す前に取り出しておく
+            $categoryNames = $itemData['categories'];
+            unset($itemData['categories']);
+
             $item = Item::create($itemData);
 
             $fileName = basename($itemData['img_url']);
@@ -151,22 +169,8 @@ class ItemSeeder extends Seeder
                 storage_path('app/public/items/' . $fileName)
             );
 
-            $targetNames = match ($item->name) {
-                '腕時計' => ['ファッション', 'メンズ'],
-                'HDD' => ['家電'],
-                '玉ねぎ3束' => ['キッチン'],
-                '革靴' => ['ファッション', 'メンズ'],
-                'ノートPC' => ['家電'],
-                'マイク' => ['家電'],
-                'ショルダーバッグ' => ['ファッション', 'レディース'],
-                'タンブラー' => ['キッチン', 'インテリア'],
-                'コーヒーミル' => ['キッチン'],
-                'メイクセット' => ['コスメ', 'レディース'],
-                default => ['インテリア'],
-            };
-
             $categoryIds = [];
-            foreach ($targetNames as $name) {
+            foreach ($categoryNames as $name) {
                 $categoryIds[] = $categoryMap[$name];
             }
             $item->categories()->attach($categoryIds);

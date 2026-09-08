@@ -37,7 +37,7 @@
 .address-container button[type="submit"] {
     width: 100%;
     padding: 15px;
-    background-color: #ff5a5f;
+    background-color: #4A7A5D;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -49,11 +49,11 @@
 }
 
 .address-container button[type="submit"]:hover {
-    background-color: #e04b4f;
+    background-color: #3A6249;
 }
 
 .error-message {
-    color: #ff4d4d;
+    color: #D64545;
     font-size: 14px;
     margin-top: 5px;
     font-weight: bold;

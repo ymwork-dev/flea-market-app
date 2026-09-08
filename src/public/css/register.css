@@ -1,26 +1,9 @@
 @import url('login.css');
 
+/* .form-inputや.btn-submitは、上でimportしているlogin.cssに既にあるので
+   ここでは書かない(重複させると、この後の記述が優先されて上書きしてしまうため) */
 .register-container {
     max-width: 400px;
     margin: 80px auto;
     padding: 0 20px;
-}
-
-.form-input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-.btn-submit {
-    width: 100%;
-    background-color: #ff4d4b;
-    color: #fff;
-    border: none;
-    padding: 12px;
-    border-radius: 4px;
-    font-weight: bold;
-    cursor: pointer;
 }

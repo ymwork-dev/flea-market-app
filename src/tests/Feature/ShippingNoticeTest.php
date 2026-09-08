@@ -57,6 +57,32 @@ class ShippingNoticeTest extends TestCase
         $response->assertDontSee('発送が必要な商品が');
     }
 
+    public function test_未払いの商品があっても発送が必要な通知には含めない(): void
+    {
+        $seller = $this->createFullAccessUser();
+        $buyer = $this->createFullAccessUser();
+        $item = Item::factory()->create(['user_id' => $seller->id, 'is_sold' => true]);
+        Order::create(['user_id' => $buyer->id, 'item_id' => $item->id, 'is_shipped' => false, 'payment_status' => 'unpaid']);
+
+        $response = $this->actingAs($seller)->get('/');
+
+        $response->assertStatus(200);
+        $response->assertDontSee('発送が必要な商品が');
+    }
+
+    public function test_マイページ_未払いの商品には発送準備中バッジが表示されない(): void
+    {
+        $seller = $this->createFullAccessUser();
+        $buyer = $this->createFullAccessUser();
+        $item = Item::factory()->create(['user_id' => $seller->id, 'is_sold' => true]);
+        Order::create(['user_id' => $buyer->id, 'item_id' => $item->id, 'is_shipped' => false, 'payment_status' => 'unpaid']);
+
+        $response = $this->actingAs($seller)->get('/mypage?page=sell');
+
+        $response->assertStatus(200);
+        $response->assertDontSee('発送準備中');
+    }
+
     public function test_マイページ_未発送の商品には発送準備中バッジが表示される(): void
     {
         $seller = $this->createFullAccessUser();

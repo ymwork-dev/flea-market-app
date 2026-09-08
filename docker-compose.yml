@@ -49,3 +49,22 @@ services:
         ports:
             - "8025:8025" # ブラウザ表示用
             - "1025:1025" # メール送信用
+
+    # Stripeからのwebhook通知を、ローカルのnginxコンテナへ自動で転送し続けるコンテナ。
+    # 手動で `stripe listen` を起動し忘れた時にwebhookが届かず、
+    # 購入しても商品がsold（売却済み）にならない不具合が起きる。
+    stripe-cli:
+        image: stripe/stripe-cli:latest
+        container_name: "flea-market-stripe-cli"
+        entrypoint: ["/bin/sh", "-c"]
+        # command をリスト（要素1つ）にしているのは、文字列のまま書くと
+        # docker composeが空白で区切って複数の引数に分けてしまい、
+        # sh -c には最初の一語（stripeだけ）しか渡らなくなるため。
+        # $$ は「docker composeに変数展開させない」ためのエスケープ。
+        # コンテナの中で実際にシェルが $STRIPE_SECRET_KEY を読み取る。
+        command:
+            - 'stripe listen --api-key "$$STRIPE_SECRET_KEY" --forward-to nginx:80/stripe/webhook'
+        env_file:
+            - ./src/.env
+        depends_on:
+            - nginx

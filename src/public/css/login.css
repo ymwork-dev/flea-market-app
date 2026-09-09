@@ -10,7 +10,7 @@
     margin-bottom: 40px;
 }
 
-.demo-account-notice {
+.demo-login-notice {
     background-color: #DCE8E0;
     border-radius: 4px;
     padding: 12px 16px;
@@ -18,12 +18,29 @@
     font-size: 14px;
 }
 
-.demo-account-notice p {
-    margin: 4px 0;
+.demo-login-notice__title {
+    font-weight: bold;
+    margin: 0 0 10px;
 }
 
-.demo-account-notice__title {
+.demo-login-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.demo-login-buttons form {
+    flex: 1;
+}
+
+.btn-demo-login {
+    width: 100%;
+    background-color: #fff;
+    color: #4A7A5D;
+    border: 1px solid #4A7A5D;
+    padding: 10px;
+    border-radius: 4px;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .form-group {

@@ -19,6 +19,9 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'テスト太郎',
                 'password' => Hash::make('password'),
+                'postcode' => '160-0022',
+                'address' => '東京都新宿区新宿1-1-1',
+                'email_verified_at' => now(),
             ]
         );
 
@@ -31,6 +34,7 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('demo1234'),
                 'postcode' => '150-0001',
                 'address' => '東京都渋谷区神宮前1-1-1',
+                'email_verified_at' => now(),
             ]
         );
 

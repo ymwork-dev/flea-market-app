@@ -8,10 +8,18 @@
 <div class="auth-container">
     <h1 class="auth-title">ログイン</h1>
 
-    <div class="demo-account-notice">
-        <p class="demo-account-notice__title">デモ用アカウント</p>
-        <p>【出品者用】test@example.com / password</p>
-        <p>【購入者用】demo@example.com / demo1234</p>
+    <div class="demo-login-notice">
+        <p class="demo-login-notice__title">かんたんログイン(デモ用)</p>
+        <div class="demo-login-buttons">
+            <form action="{{ route('demo-login', 'seller') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn-demo-login">出品者としてログイン</button>
+            </form>
+            <form action="{{ route('demo-login', 'buyer') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn-demo-login">購入者としてログイン</button>
+            </form>
+        </div>
     </div>
 
     <form action="{{ route('login') }}" method="POST" class="auth-form"novalidate>

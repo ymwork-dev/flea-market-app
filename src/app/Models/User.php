@@ -11,6 +11,15 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
 
+    // ポートフォリオ公開時、誰でも試せるようにログイン画面から直接ログインさせる
+    // デモ用の2アカウント。プロフィール・パスワード・メールアドレスの変更は禁止する
+    public const DEMO_EMAILS = ['test@example.com', 'demo@example.com'];
+
+    public function isDemoAccount(): bool
+    {
+        return in_array($this->email, self::DEMO_EMAILS, true);
+    }
+
     protected $fillable = [
         'name',
         'email',

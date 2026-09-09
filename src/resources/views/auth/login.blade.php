@@ -8,20 +8,6 @@
 <div class="auth-container">
     <h1 class="auth-title">ログイン</h1>
 
-    <div class="demo-login-notice">
-        <p class="demo-login-notice__title">かんたんログイン(デモ用)</p>
-        <div class="demo-login-buttons">
-            <form action="{{ route('demo-login', 'seller') }}" method="POST">
-                @csrf
-                <button type="submit" class="btn-demo-login">出品者としてログイン</button>
-            </form>
-            <form action="{{ route('demo-login', 'buyer') }}" method="POST">
-                @csrf
-                <button type="submit" class="btn-demo-login">購入者としてログイン</button>
-            </form>
-        </div>
-    </div>
-
     <form action="{{ route('login') }}" method="POST" class="auth-form"novalidate>
         @csrf
 
@@ -48,6 +34,20 @@
 
     <div class="auth-footer">
         <a href="{{ route('register') }}" class="link-register">会員登録はこちら</a>
+    </div>
+
+    <div class="demo-login-notice">
+        <p class="demo-login-notice__title">デモ用ログイン</p>
+        <div class="demo-login-buttons">
+            <form action="{{ route('demo-login', 'seller') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn-demo-login">出品者としてログイン</button>
+            </form>
+            <form action="{{ route('demo-login', 'buyer') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn-demo-login">購入者としてログイン</button>
+            </form>
+        </div>
     </div>
 </div>
 @endsection

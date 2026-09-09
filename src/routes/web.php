@@ -8,6 +8,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StripeWebhookController;
+use App\Http\Controllers\DemoLoginController;
 
 Route::middleware(['ensure.verified.profile'])->group(function () {
     Route::get('/', [ItemController::class, 'index'])->name('item.index');
@@ -16,7 +17,9 @@ Route::middleware(['ensure.verified.profile'])->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/mypage/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::post('/mypage/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/mypage/profile', [ProfileController::class, 'update'])
+        ->middleware('restrict.demo.account')
+        ->name('profile.update');
 });
 
 Route::middleware(['auth', 'verified', 'ensure.profile.completed'])->group(function () {
@@ -47,6 +50,8 @@ Route::middleware(['auth', 'verified', 'ensure.profile.completed'])->group(funct
 
     Route::post('/purchase/payment/store-session', [PurchaseController::class, 'storePaymentSession']);
     });
+
+Route::post('/demo-login/{type}', [DemoLoginController::class, 'login'])->name('demo-login');
 
 // Stripeから直接呼ばれるURL。ログインもCSRFトークンも持っていないので、
 // authミドルウェアのグループには入れない

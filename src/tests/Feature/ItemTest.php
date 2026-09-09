@@ -81,7 +81,7 @@ class ItemTest extends TestCase
         $response->assertSee('Sold');
     }
 
-    public function test_商品一覧取得_自分が出品した商品は表示されない(): void
+    public function test_商品一覧取得_自分が出品した商品も表示される(): void
     {
         $me = User::factory()->create([
             'email_verified_at' => now(),
@@ -110,6 +110,6 @@ class ItemTest extends TestCase
         $response = $this->actingAs($me)->get('/');
         $response->assertStatus(200);
         $response->assertSee('他人の出品した商品');
-        $response->assertDontSee('自分の出品した商品');
+        $response->assertSee('自分の出品した商品');
     }
 }

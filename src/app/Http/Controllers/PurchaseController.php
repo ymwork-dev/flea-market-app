@@ -21,6 +21,8 @@ class PurchaseController extends Controller
         $item = Item::findOrFail($item_id);
         $user = Auth::user();
 
+        abort_if($item->user_id === $user->id, 403, '自分が出品した商品は購入できません。');
+
         if (session('last_item_id') != $item_id) {
             session()->forget('payment_method');
         }

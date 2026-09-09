@@ -45,6 +45,28 @@ class PurchaseTest extends TestCase
         $this->assertEquals(0, $item->fresh()->is_sold);
     }
 
+    public function test_商品購入機能_自分が出品した商品の購入画面は表示できない(): void
+    {
+        $seller = $this->createFullAccessUser();
+        $item = Item::factory()->create(['user_id' => $seller->id, 'is_sold' => false]);
+
+        $this->actingAs($seller)->get("/purchase/{$item->id}")
+            ->assertForbidden();
+    }
+
+    public function test_商品購入機能_自分が出品した商品は購入処理でエラーになる(): void
+    {
+        $seller = $this->createFullAccessUser();
+        $item = Item::factory()->create(['user_id' => $seller->id, 'is_sold' => false]);
+
+        $response = $this->actingAs($seller)
+            ->from("/purchase/{$item->id}")
+            ->post("/purchase/{$item->id}", ['payment_method' => 'カード支払い']);
+
+        $response->assertRedirect("/purchase/{$item->id}");
+        $response->assertSessionHasErrors(['error' => '自分の商品は購入できません']);
+    }
+
     public function test_商品購入機能_注文が出来ていれば購入完了画面にメッセージが出る(): void
     {
         $user = $this->createFullAccessUser();

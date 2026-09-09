@@ -21,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'ensure.profile.completed' => \App\Http\Middleware\EnsureProfileIsCompleted::class,
             'ensure.verified.profile' => \App\Http\Middleware\EnsureVerifiedProfileIfLoggedIn::class,
+            'restrict.demo.account' => \App\Http\Middleware\RestrictDemoAccount::class,
         ]);
 
         // 3. StripeのWebhookはCSRFトークンを持たずに送られてくるので、対象外にする

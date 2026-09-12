@@ -50,9 +50,12 @@
                         <li class="header__nav-item">
                             <a href="/sell" class="header__sell-btn">出品</a>
                         </li>
-                    @else
+                    @elseif(!request()->routeIs('login', 'register'))
                         <li class="header__nav-item">
                             <a href="/login" class="header__nav-link">ログイン</a>
+                        </li>
+                        <li class="header__nav-item">
+                            <a href="/register" class="header__nav-link">会員登録</a>
                         </li>
                     @endif
                 </ul>

@@ -51,6 +51,26 @@
     color: #fff;
 }
 
+@media (max-width: 480px) {
+    .profile-info {
+        gap: 12px;
+    }
+
+    .profile-image {
+        width: 64px;
+        height: 64px;
+    }
+
+    .user-name {
+        font-size: 18px;
+    }
+
+    .btn-profile-edit {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+}
+
 /* 発送待ちの商品バッジだけ、マイページ固有の色(オレンジ)を売り切れバッジに重ねる */
 .shipping-badge {
     background-color: rgba(255, 152, 0, 0.85);

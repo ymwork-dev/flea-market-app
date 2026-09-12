@@ -16,7 +16,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: src
-        run: npm ci
+        run: npm install
 
       - name: Build assets
         working-directory: src

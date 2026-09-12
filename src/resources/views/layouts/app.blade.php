@@ -44,17 +44,17 @@
                                 <button type="submit" class="header__nav-link header__logout-btn">ログアウト</button>
                             </form>
                         </li>
+                        <li class="header__nav-item">
+                            <a href="/mypage" class="header__nav-link">マイページ</a>
+                        </li>
+                        <li class="header__nav-item">
+                            <a href="/sell" class="header__sell-btn">出品</a>
+                        </li>
                     @else
                         <li class="header__nav-item">
                             <a href="/login" class="header__nav-link">ログイン</a>
                         </li>
                     @endif
-                    <li class="header__nav-item">
-                        <a href="/mypage" class="header__nav-link">マイページ</a>
-                    </li>
-                    <li class="header__nav-item">
-                        <a href="/sell" class="header__sell-btn">出品</a>
-                    </li>
                 </ul>
             </nav>
         </div>

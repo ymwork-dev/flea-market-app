@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('css/verify.css') }}">
+    @vite(['resources/css/verify.css'])
 @endpush
 
 @section('content')

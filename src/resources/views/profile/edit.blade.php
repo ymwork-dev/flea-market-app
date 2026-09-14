@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('css/edit.css') }}">
+    @vite(['resources/css/edit.css'])
 @endpush
 
 @section('content')

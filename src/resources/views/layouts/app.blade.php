@@ -7,8 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>flea-marketフリマ</title>
 
-    <link rel="stylesheet" href="{{ asset('css/common.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/flash-message.css') }}">
+    @vite(['resources/css/common.css'])
 
     @stack('css')
 </head>

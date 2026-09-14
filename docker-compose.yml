@@ -16,6 +16,16 @@ services:
         volumes:
             - ./src:/var/www/
 
+    node:
+        image: node:20
+        container_name: "flea-market-node"
+        working_dir: /var/www/
+        volumes:
+            - ./src:/var/www/
+        ports:
+            - "5173:5173"
+        command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+
     mysql:
         image: mysql:8.0.26
         container_name: "flea-market-db"

@@ -1,7 +1,7 @@
 {{-- resources/views/components/flash-message.blade.php --}}
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('css/flash-message.css') }}">
+    @vite(['resources/css/flash-message.css'])
 @endpush
 
 @if (session('message'))

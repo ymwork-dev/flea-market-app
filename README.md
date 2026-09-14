@@ -213,31 +213,23 @@ erDiagram
     docker compose exec php sh -c "rm -f public/storage && php artisan storage:link"
     ```
 
-10. **Node.jsのインストール**
+> **補足**
+>
+> docker compose up -d --build を実行すると、node コンテナで npm install と Vite開発サーバー（npm run dev）が自動的に実行されます。そのため、追加で npm install や npm run dev を実行する必要はありません。
 
-    ```bash
-    docker compose exec php sh -c "apt-get update && apt-get install -y nodejs npm"
-    ```
-
-11. **フロントエンドのビルド**
-
-    ```bash
-    docker compose exec php sh -c "npm install && npm run build"
-    ```
-
-12. **マイグレーション・シーディングを実行**
+10. **マイグレーション・シーディングを実行**
 
     ```bash
     docker compose exec php php artisan migrate:fresh --seed
     ```
 
-13. **権限付与（ストレージの書き込みエラー対策）**
+11. **権限付与（ストレージの書き込みエラー対策）**
 
     ```bash
     docker compose exec php chmod -R 777 storage
     ```
 
-14. **アプリケーションへのアクセス**
+12. **アプリケーションへのアクセス**
 
     - アプリケーションURL: http://localhost:8082/
     - メール確認URL (Mailpit): http://localhost:8025/

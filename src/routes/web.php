@@ -10,6 +10,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\DemoLoginController;
 
+//商品一覧・詳細ページは、プロフィール未設定でも閲覧可能。
+// ログイン済みでメール未認証や郵便番号未設定の場合、該当画面にリダイレクト
 Route::middleware(['ensure.verified.profile'])->group(function () {
     Route::get('/', [ItemController::class, 'index'])->name('item.index');
     Route::get('/item/{item_id}', [ItemController::class, 'show'])->name('item.show');

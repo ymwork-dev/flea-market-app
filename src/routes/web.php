@@ -1,5 +1,6 @@
 <?php
 
+// URL振り分け表オブジェクトを使えるように設定
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\SellController;
@@ -10,13 +11,15 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\DemoLoginController;
 
-//商品一覧・詳細ページは、プロフィール未設定でも閲覧可能。
+// 商品一覧・詳細ページは、プロフィール未設定でも閲覧可能。
 // ログイン済みでメール未認証や郵便番号未設定の場合、該当画面にリダイレクト
 Route::middleware(['ensure.verified.profile'])->group(function () {
     Route::get('/', [ItemController::class, 'index'])->name('item.index');
     Route::get('/item/{item_id}', [ItemController::class, 'show'])->name('item.show');
 });
 
+// ログイン済み・メール認証済みの場合、プロフィールの閲覧が可能。
+// demoアカウントは編集不可
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/mypage/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/mypage/profile', [ProfileController::class, 'update'])
@@ -24,10 +27,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('profile.update');
 });
 
+// ログイン済み・メール認証済み・プロフィール設定済みの場合、出品・購入・コメント・いいね・配送先変更が可能
 Route::middleware(['auth', 'verified', 'ensure.profile.completed'])->group(function () {
 
+    // マイページ操作可能
     Route::get('/mypage', [ProfileController::class, 'index'])
-        ->middleware(['auth', 'verified'])
         ->name('mypage');
 
     Route::get('/sell', [SellController::class, 'sell'])->name('sell');
@@ -50,14 +54,16 @@ Route::middleware(['auth', 'verified', 'ensure.profile.completed'])->group(funct
     Route::get('/purchase/address/{item_id}', [PurchaseController::class, 'editAddress'])->name('purchase.address.edit');
     Route::post('/purchase/address/{item_id}', [PurchaseController::class, 'updateAddress'])->name('purchase.address.update');
 
+    // 選択した支払方法を一時的にセッションへ保存する。
     Route::post('/purchase/payment/store-session', [PurchaseController::class, 'storePaymentSession']);
     });
 
 Route::post('/demo-login/{type}', [DemoLoginController::class, 'login'])->name('demo-login');
 
-// Stripeから直接呼ばれるURL。ログインもCSRFトークンも持っていないので、
-// authミドルウェアのグループには入れない
+// Stripeから直接呼ばれるURL。ログインもCSRFトークンも持っていないのでauthミドルウェアのグループには入れない
+// コントローラー側で、Stripe-Signature署名検証
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])->name('stripe.webhook');
+
 
 Route::get('/email/verify', function () {
     return view('auth.verify-email');

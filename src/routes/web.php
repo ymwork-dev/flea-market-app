@@ -10,6 +10,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\DemoLoginController;
+use App\Http\Controllers\EmailVerificationController;
 
 // 商品一覧・詳細ページは、プロフィール未設定でも閲覧可能。
 // ログイン済みでメール未認証や郵便番号未設定の場合、該当画面にリダイレクト
@@ -30,7 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // ログイン済み・メール認証済み・プロフィール設定済みの場合、出品・購入・コメント・いいね・配送先変更が可能
 Route::middleware(['auth', 'verified', 'ensure.profile.completed'])->group(function () {
 
-    // マイページ操作可能
+    // マイページ操作可能にする
     Route::get('/mypage', [ProfileController::class, 'index'])
         ->name('mypage');
 
@@ -64,20 +65,8 @@ Route::post('/demo-login/{type}', [DemoLoginController::class, 'login'])->name('
 // コントローラー側で、Stripe-Signature署名検証
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])->name('stripe.webhook');
 
+// メール認証画面で認証はこちらボタンを押せば認証完了するルート
+Route::get('/email/go-to-mailpit', [EmailVerificationController::class, 'completeVerification'])
+    ->middleware('auth')
+    ->name('verification.show');
 
-Route::get('/email/verify', function () {
-    return view('auth.verify-email');
-})->middleware('auth')->name('verification.notice');
-
-// 修正後：ボタンを押したらメールボックスに行かず、認証を完了させて次に進む
-Route::get('/email/go-to-mailpit', function () {
-    $user = Auth::user(); // 現在新規登録してログイン状態になっているユーザーを取得
-
-    // ユーザーのメール認証がまだ済んでいなければ
-    if ($user && !$user->hasVerifiedEmail()) {
-        $user->markEmailAsVerified(); // データベースの email_verified_at に現在時刻を強制書き込み
-    }
-
-    // マイページ（プロフィール設定画面へのミドルウェアが走る場所）へリダイレクト
-    return redirect()->route('mypage');
-})->middleware('auth')->name('verification.show');

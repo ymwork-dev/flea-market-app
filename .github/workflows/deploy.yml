@@ -1,27 +1,34 @@
 name: Deploy to AWS
 
+# pushで反映
 on:
   push:
     branches: [main]
 
+# Ubuntu環境で実行(pushの度に使い捨てUbuntu環境が作られる)
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # 上から順番に実行する作業リスト
     steps:
+    # リポジトリのクローン
       - uses: actions/checkout@v4
-
+      # Node.jsインストール
       - uses: actions/setup-node@v4
         with:
           node-version: 20
 
+      # srcディレクトリでnpm install実行
       - name: Install dependencies
         working-directory: src
         run: npm install
 
+      # srcディレクトリでnpm run build実行
       - name: Build assets
         working-directory: src
         run: npm run build
 
+      # SSH+git pullでサーバーにコードを反映
       - name: Pull latest code on server
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -32,6 +39,7 @@ jobs:
             cd ~/flea-market-app
             git pull
 
+      # src/public/buildディレクトリをサーバーにアップロード
       - name: Upload built assets
         uses: appleboy/scp-action@v0.1.7
         with:

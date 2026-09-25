@@ -1,18 +1,25 @@
 name: Deploy to AWS
 
-# pushで反映
+# Testsワークフローが終わったら動く（mainブランチのときだけ）
 on:
-  push:
+  workflow_run:
+    workflows: [Tests]
+    types: [completed]
     branches: [main]
 
 # Ubuntu環境で実行(pushの度に使い捨てUbuntu環境が作られる)
 jobs:
   deploy:
+    # テストが成功したときだけデプロイする
+    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     # 上から順番に実行する作業リスト
     steps:
     # リポジトリのクローン
       - uses: actions/checkout@v4
+        with:
+          # テストが通ったコミットを取得する
+          ref: ${{ github.event.workflow_run.head_sha }}
       # Node.jsインストール
       - uses: actions/setup-node@v4
         with:

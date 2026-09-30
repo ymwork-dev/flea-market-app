@@ -32,6 +32,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'stripe/webhook',
         ]);
+
+        // Renderの入口（プロキシ）が付ける「元はhttpsだった」という情報を信頼する
+        $middleware->trustProxies(at: '*');
     })
 
     // エラー処理はlaravel標準のまま

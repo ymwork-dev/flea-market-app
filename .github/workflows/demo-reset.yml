@@ -1,0 +1,45 @@
+name: Demo Reset
+
+on:
+  schedule:
+    # 毎日 日本時間の0時30分に実行（GitHubの時刻はUTCなので、9時間引いた15時30分を書く）
+    - cron: '30 15 * * *'
+  # Actionsの画面から手動でも実行できるようにする
+  workflow_dispatch:
+
+jobs:
+  reset:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src
+    steps:
+      - uses: actions/checkout@v4
+
+      # PHP 8.3を用意（MySQLにつなぐ拡張も入れる）
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo_mysql
+
+      # Composerで依存パッケージをインストール
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      # 公開デモのDB（Aiven）につないで、デモデータを初期状態に戻す
+      - name: Reset demo data
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: mysql-3fea4524-kokochii.k.aivencloud.com
+          DB_PORT: 26296
+          DB_DATABASE: flea_market_db
+          DB_USERNAME: avnadmin
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_ATTR_SSL_CA: ${{ github.workspace }}/docker/render/aiven-ca.pem
+        run: php artisan demo:reset
+
+      # リセット後、公開デモのページがちゃんと表示されるか確かめる（寝ていたら起きるまで最大3分待つ）
+      - name: Check public demo
+        run: curl --fail --silent --show-error --max-time 180 --retry 3 --retry-delay 30 --output /dev/null https://flea-market-app.onrender.com/
+
+        

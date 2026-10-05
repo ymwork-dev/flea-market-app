@@ -7,20 +7,24 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+// ProfileControllerクラスは、プロフィールに関連する操作を処理するコントローラー
 class ProfileController extends Controller
 {
+    // indexメソッドは、プロフィールページを表示するためのメソッド
     public function index(Request $request)
     {
+        // 認証されているユーザー情報を取得
         $user = Auth::user();
+        // クエリパラメータ―から出品ページを取得
         $page = $request->query('page', 'sell');
 
+        // 購入ページの場合、ユーザー情報と一緒に商品情報を取得
         if ($page === 'buy') {
             $items = Order::where('user_id', $user->id)
                     ->with('item')
                     ->get()
                     ->pluck('item');
         } else {
-            // order も一緒に読み込んでおき、発送済みかどうかをビューで判定できるようにする
             $items = $user->items()->with('order')->get();
         }
 

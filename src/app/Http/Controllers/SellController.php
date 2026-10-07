@@ -79,46 +79,65 @@ class SellController extends Controller
         return view('item_sell', compact('item', 'categories', 'selectedCategoryIds', 'isEdit'));
     }
 
-    // 
+    // 出品した商品の編集を更新するためのメソッド
     public function update(ExhibitionRequest $request, $item_id)
     {
+        // 商品IDから商品情報を1件取得、無い場合404エラー
         $item = Item::findOrFail($item_id);
+        // 出品した商品が販売中か確認、違う場合403エラー
         $this->ensureEditable($item);
 
+        // 商品画像のパスを取得
         $path = $item->img_url;
+        // 画像ファイルの更新がある場合、保存し、画像ファイルのパスを取得
         if ($request->hasFile('img_url')) {
             $path = $request->file('img_url')->store('items', 'public');
         }
 
+        // 商品の更新をitemデータベースに保存
         $item->update([
+            // 商品名の更新
             'name' => $request->name,
+            // 商品価格
             'price' => $request->price,
+            // 商品説明
             'description' => $request->description,
+            // 画像パス
             'img_url' => $path,
+            // 商品状態
             'condition' => $request->condition,
+            // ブランド名
             'brand' => $request->brand,
         ]);
 
-        // 
+        // 商品情報のカテゴリIDを選び直したものに入れ替えて保存。未選択は全て外す。
         $item->categories()->sync($request->category_ids ?? []);
 
+        // メッセージの表示と一緒に、商品詳細ページにリダイレクト
         return redirect()->route('item.show', ['item_id' => $item->id])->with('message', '商品を編集しました');
     }
 
+    // 出品商品を削除するためのメソッド
     public function destroy($item_id)
     {
+        // 商品IDから商品情報を1件取得、無ければ404エラー
         $item = Item::findOrFail($item_id);
+        // 出品した商品が販売中かの確認、違う場合403エラー
         $this->ensureEditable($item);
 
+        // itemデータベースから選択した商品情報の削除
         $item->delete();
 
+        // メッセージと一緒にトップ画面へリダイレクト
         return redirect('/')->with('message', '商品を削除しました');
     }
 
-    // 
+    // 出品した商品が販売中か、編集・削除してもいいか確確認するためのメソッド
     private function ensureEditable(Item $item): void
     {
+        // 商品の出品者がログイン中ユーザーでない場合403エラー
         abort_if($item->user_id !== Auth::id(), 403);
+        // 売切れの場合、403エラーにメッセージ表示
         abort_if($item->is_sold, 403, '売却済みの商品は編集・削除できません');
     }
 }

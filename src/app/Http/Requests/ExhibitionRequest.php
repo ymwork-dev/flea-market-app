@@ -4,28 +4,38 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+// 出品をチェックするためのクラス
 class ExhibitionRequest extends FormRequest
 {
+    // このリクエストを使ってよいか決めるメソッド
     public function authorize(): bool
     {
+        // 出品を許可
         return true;
     }
 
+    // 出品ルールを定義するメソッド
     public function rules(): array
     {
         return [
+            // 商品名必須、文字列、255字以内
             'name'        => ['required', 'string', 'max:255'],
+            // 商品説明必須、文字列、255字以内
             'description' => ['required', 'string', 'max:255'],
-            // 編集(PUT)の時は画像を選び直さなくてもよいので nullable、
-            // 新規出品(POST)の時は必須のままにする
+            // 商品画像は出品時必須、編集時は空でもよい、画像ファイル、jpegかpng、2MBまで
             'img_url'     => [$this->isMethod('put') ? 'nullable' : 'required', 'image', 'mimes:jpeg,png', 'max:2048'],
+            // 商品カテゴリ選択は必須
             'category_ids'    => ['required'],
+            // 商品コンディションの入力必須
             'condition'   => ['required'],
+            // ブランド名は空でもよい、文字列、255字以内
             'brand'       => ['nullable', 'string', 'max:255'],
+            // 商品価格は必須、整数、0以上
             'price'       => ['required', 'integer', 'min:0'],
         ];
     }
 
+    // メッセージを定義するメソッド
     public function messages(): array
     {
         return [

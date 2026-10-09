@@ -55,7 +55,10 @@ class StripeWebhookTest extends TestCase
             'payment_status' => 'paid',
             'stripe_session_id' => 'test_session_card',
         ]);
-        Notification::assertSentTo($seller, ItemSoldNotification::class);
+        // カード払いは支払い済みなので、発送をお願いする文が入る
+        Notification::assertSentTo($seller, ItemSoldNotification::class, function ($notification) use ($seller) {
+            return in_array('マイページから発送手続きをお願いします。', $notification->toMail($seller)->outroLines);
+        });
     }
 
     public function test_コンビニ払いの決済完了Webhookを受け取るとunpaidで注文が作られる(): void
@@ -96,6 +99,13 @@ class StripeWebhookTest extends TestCase
             'item_id' => $item->id,
             'payment_status' => 'unpaid',
         ]);
+        // まだ支払われていないので、発送をお願いする文は入らない
+        Notification::assertSentTo($seller, ItemSoldNotification::class, function ($notification) use ($seller) {
+            $lines = $notification->toMail($seller)->outroLines;
+
+            return !in_array('マイページから発送手続きをお願いします。', $lines)
+                && in_array('コンビニ払いのお支払いが確認できたら、改めてお知らせします。', $lines);
+        });
     }
 
     public function test_すでに売却済みの商品には決済完了Webhookが届いても注文を重複作成しない(): void

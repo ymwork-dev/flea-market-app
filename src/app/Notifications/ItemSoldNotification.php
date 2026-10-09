@@ -30,13 +30,18 @@ class ItemSoldNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
+        $mail = (new MailMessage)
             ->subject('商品が売れました')
             ->greeting($notifiable->name . '様')
             ->line('出品していた商品が購入されました。')
             ->line('商品名: ' . $this->item->name)
             ->line('価格: ¥' . number_format($this->item->price))
-            ->action('商品を確認する', url('/item/' . $this->item->id))
-            ->line('マイページから発送手続きをお願いします。');
+            ->action('商品を確認する', url('/item/' . $this->item->id));
+
+        if ($this->item->order->payment_status === 'paid') {
+            return $mail->line('マイページから発送手続きをお願いします。');
+        }
+
+        return $mail->line('コンビニ払いのお支払いが確認できたら、改めてお知らせします。');
     }
 }

@@ -44,6 +44,12 @@
     cursor: pointer;
 }
 
+.demo-login-notice__accounts {
+    margin: 10px 0 0;
+    color: #555;
+    line-height: 1.7;
+}
+
 .form-group {
     margin-bottom: 20px;
 }

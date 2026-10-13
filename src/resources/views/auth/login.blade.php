@@ -48,6 +48,11 @@
                 <button type="submit" class="btn-demo-login">購入者としてログイン</button>
             </form>
         </div>
+        <p class="demo-login-notice__accounts">
+            手入力でもログインできます<br>
+            出品者: test@example.com / password<br>
+            購入者: demo@example.com / demo1234
+        </p>
     </div>
 </div>
 @endsection

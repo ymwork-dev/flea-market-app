@@ -223,3 +223,22 @@ body {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+/* スマホ幅(768px以下)では、ヘッダーの左右の余白を小さくし、
+   縦に積んだ検索欄を横いっぱいに広げる。タブも2つ並んで収まるよう余白を小さくする */
+@media (max-width: 768px) {
+    .header {
+        padding: 12px 16px;
+    }
+
+    .header__search {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+    }
+
+    .tab-item {
+        padding: 12px 16px;
+        font-size: 15px;
+    }
+}

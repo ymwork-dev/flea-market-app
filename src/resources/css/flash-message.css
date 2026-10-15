@@ -39,3 +39,11 @@
     font-weight: bold;
     text-decoration: underline;
 }
+
+/* スマホ幅(768px以下)では、メッセージが長いと右端の×ボタンに重なるので、右側に余白をとる */
+@media (max-width: 768px) {
+    .flash-message,
+    .flash-error {
+        padding: 15px 40px 15px 15px;
+    }
+}

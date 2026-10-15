@@ -139,3 +139,53 @@ hr {
 .change-link:hover {
     text-decoration: underline;
 }
+
+/* スマホ幅(768px以下)では、右側の金額・購入ボタンの枠(min-width: 350px)が入りきらないので、
+   左(商品・支払い方法・配送先)の下に縦に積む */
+@media (max-width: 768px) {
+    .purchase-container {
+        margin: 30px auto;
+        padding: 0 16px;
+    }
+
+    .purchase-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 30px;
+    }
+
+    .purchase-side-area {
+        min-width: 0;
+    }
+
+    .item-info {
+        gap: 16px;
+    }
+
+    .item-image {
+        width: 100px;
+        height: 100px;
+        flex-shrink: 0;
+    }
+
+    .item-detail h1 {
+        font-size: 20px;
+    }
+
+    hr {
+        margin: 24px 0;
+    }
+
+    .select-box {
+        width: 100%;
+    }
+
+    .summary-table th,
+    .summary-table td {
+        padding: 20px 16px;
+    }
+
+    .purchase-side-box {
+        margin-bottom: 24px;
+    }
+}

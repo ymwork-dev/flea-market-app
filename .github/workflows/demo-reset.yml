@@ -40,6 +40,6 @@ jobs:
 
       # リセット後、公開デモのページがちゃんと表示されるか確かめる（寝ていたら起きるまで最大3分待つ）
       - name: Check public demo
-        run: curl --fail --silent --show-error --max-time 180 --retry 3 --retry-delay 30 --output /dev/null https://flea-market-app.onrender.com/
+        run: curl --fail --silent --show-error --max-time 180 --retry 6 --retry-delay 30 --output /dev/null https://flea-market-app.onrender.com/
 
         

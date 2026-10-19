@@ -7,19 +7,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+// ログインできて、メール認証が必要なユーザーテーブルを扱うクラス
 class User extends Authenticatable implements MustVerifyEmail
 {
+    // ダミーデータ作成と通知送信の準備
     use HasFactory, Notifiable;
 
-    // ポートフォリオ公開時、誰でも試せるようにログイン画面から直接ログインさせる
-    // デモ用の2アカウント。プロフィール・パスワード・メールアドレスの変更は禁止する
+    // デモ用アカウントの2つのメールアドレス
     public const DEMO_EMAILS = ['test@example.com', 'demo@example.com'];
 
+    // デモアカウントか調べるメソッド
     public function isDemoAccount(): bool
     {
+        // デモアカウントか調べ、2つのメールアドレスのどちらかならtrue
         return in_array($this->email, self::DEMO_EMAILS, true);
     }
 
+    // まとめて保存して良い列
+    // ユーザー名・メールアドレス・パスワード・郵便番号・住所・建物名
     protected $fillable = [
         'name',
         'email',
@@ -29,56 +34,58 @@ class User extends Authenticatable implements MustVerifyEmail
         'building',
     ];
 
+    // まとめて使うときに隠す列(パスワード・トークン)
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
+    // DBから取得するときの形を決める
     protected function casts(): array
     {
+        // メール認証は日時として扱う・パスワードはハッシュ化
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
 
+    // いいねした商品を扱うメソッド
     public function likedItems()
     {
+        // いいねはたくさん
         return $this->belongsToMany(Item::class, 'likes');
     }
 
+    // 出品した商品をコントローラーや画面で取得するためのメソッド
     public function items()
     {
+        // 商品はたくさん
         return $this->hasMany(Item::class);
     }
 
-    public function purchasedItems()
-    {
-        return $this->belongsToMany(Item::class, 'orders', 'user_id', 'item_id');
-    }
-
-    // 自分が出品した商品のうち、支払いも確認できていて、まだ発送していないものの件数
+    // 発送が必要な注文の件数を数えるメソッド
     public function unshippedOrdersCount(): int
     {
+        // 出品者は自分・支払済み・未発送の注文を数える
         return Order::whereHas('item', function ($query) {
             $query->where('user_id', $this->id);
         })->where('payment_status', 'paid')->where('is_shipped', false)->count();
     }
 
-    // Ratingテーブルには item_id が無いので、'order.item' という書き方で
-    // Rating → Order → Item と2段階たどり、その先の Item.user_id で
-    // 「出品者ごとの評価」を絞り込んでいる。
-    // 出品者として、これまでに購入者から受け取った評価の件数
+    // 出品者としてもらった評価件数を数えるメソッド
     public function receivedRatingsCount(): int
     {
+        // 評価・注文・商品をたどり、出品者の評価を数える
         return Rating::whereHas('order.item', function ($query) {
             $query->where('user_id', $this->id);
         })->count();
     }
 
-    // 出品者として、これまでに購入者から受け取った評価の平均点(1件も無ければnull)
+    // 評価スコアの平均値を扱うメソッド
     public function receivedRatingsAverage(): ?float
     {
+        // 評価・注文・商品をたどり、スコア平均値を計算
         return Rating::whereHas('order.item', function ($query) {
             $query->where('user_id', $this->id);
         })->avg('score');

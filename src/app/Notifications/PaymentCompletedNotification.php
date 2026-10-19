@@ -7,27 +7,25 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
+// コンビニ払いの支払い確認ができた時に出品者へメールで知らせるクラス
 class PaymentCompletedNotification extends Notification
 {
+    // 通知を裏で送る仕組みを使えるようにする(すぐに送っているので未使用)
     use Queueable;
 
+    // 通知を作るとき商品情報を受取り覚えておくためのメソッド
     public function __construct(private Item $item)
     {
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
+    // どの方法で送るか決めるメソッド
     public function via(object $notifiable): array
     {
+        // メールで送る
         return ['mail'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
+    // メールの中身を組み立てるメソッド
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)

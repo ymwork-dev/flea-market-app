@@ -11,41 +11,43 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
+// 商品のデモデータを入れるシーダ―クラス
 class ItemSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // 外部キー制約を無効にしている間はItemが消えてもordersなどが連動削除されないので、
-        // item_idに紐づくテーブルはここで手動ですべて空にしておく
+        // 外部キー制約(注文があるのに商品が消える)ようなつながりの矛盾を止める仕組みを一旦とめる
         Schema::disableForeignKeyConstraints();
+        // テーブルの中身を全部消す。カテゴリとのつながり・評価・注文・いいね・コメント・商品そのもの
         DB::table('category_item')->truncate();
         DB::table('ratings')->truncate();
         DB::table('orders')->truncate();
         DB::table('likes')->truncate();
         DB::table('comments')->truncate();
         Item::truncate();
+        // 外部キー制約を元に戻す
         Schema::enableForeignKeyConstraints();
 
+        // デモ出品者を取得
         $user = User::where('email', 'test@example.com')->first();
 
+        // カテゴリ名10個一覧
         $categories = [
             'ファッション', 'インテリア', 'レディース', 'メンズ',
             'コスメ', 'スポーツ', 'ハンドメイド', 'アクセサリー',
             'おもちゃ', 'ベビー・キッズ'
         ];
 
+        // カテゴリ名を1つずつ処理する
         foreach ($categories as $cat) {
+            // あれば取り出し、なければ作る
             Category::firstOrCreate(['name' => $cat]);
         }
 
+        // カテゴリ名とIDの対応表を作る
         $categoryMap = Category::pluck('id', 'name');
 
-        // 商品ごとに、付けるカテゴリーもここへ直接書いておく。
-        // (以前は商品名でカテゴリーを振り分けていたが、「デニムパンツ」のように
-        // 同じ名前の商品が複数あると正しく振り分けられなかったため)
+        // 商品10個のデータ
         $items = [
             [
                 'name' => 'スエードシューズ',
@@ -149,30 +151,38 @@ class ItemSeeder extends Seeder
             ],
         ];
 
+        // 画像を置くフォルダ
         $targetDirectory = storage_path('app/public/items');
+        // フォルダがない場合
         if (!File::isDirectory($targetDirectory)) {
+            // フォルダを作る
             File::makeDirectory($targetDirectory, 0755, true, true);
         }
 
+        // 商品データを1つずつ処理する
         foreach ($items as $itemData) {
-            // categoriesはitemsテーブルのカラムでは無いので、
-            // Item::create()に渡す前に取り出しておく
+            // カテゴリ名を取り出す
             $categoryNames = $itemData['categories'];
+            // カテゴリはitemテーブルの列ではないので、商品データーから外しておく
             unset($itemData['categories']);
 
+            // 商品をDBに保存する
             $item = Item::create($itemData);
 
+            // 画像の場所からファイル名だけ取り出す
             $fileName = basename($itemData['img_url']);
-
+            // コピーして商品画像の置き場所に置く
             File::copy(
                 public_path('img/dummy/' . $fileName),
                 storage_path('app/public/items/' . $fileName)
             );
 
+            // カテゴリ名をIDに変える
             $categoryIds = [];
             foreach ($categoryNames as $name) {
                 $categoryIds[] = $categoryMap[$name];
             }
+            // 商品とカテゴリをつなぐ
             $item->categories()->attach($categoryIds);
         }
     }

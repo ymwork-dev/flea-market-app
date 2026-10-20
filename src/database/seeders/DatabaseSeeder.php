@@ -6,14 +6,13 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
 
+// 最初のデータ(デモアカウントと商品)をDBに入れるクラス
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
+    // シーダ―を動かした時に実行されるメソッド
     public function run(): void
     {
-        // 出品者役のユーザーを作成(ログイン画面に表示するデモ用アカウント)
+        // 出品者役のデモアカウントを作る
         User::updateOrCreate(
             ['email' => 'test@example.com'],
             [
@@ -25,8 +24,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 購入者役のユーザーを作成(出品者アカウントは自分の商品を買えないため、
-        // 購入~発送~受け取り~評価の一連の流れを試すにはこちらでログインする)
+        // 購入者役のデモアカウントを作る
         User::updateOrCreate(
             ['email' => 'demo@example.com'],
             [
@@ -38,6 +36,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        // 商品のシーダ―も続けて動かす
         $this->call([
             ItemSeeder::class,
         ]);

@@ -18,7 +18,7 @@
         @foreach($items as $item)
             <a href="/item/{{ $item->id }}" class="product-card">
                 <div class="product-image-wrapper">
-                    <img src="{{ asset('storage/' . $item->img_url) }}" alt="{{ $item->name }}">
+                    <img src="{{ Storage::url($item->img_url) }}" alt="{{ $item->name }}">
 
                     @if($item->is_sold)
                         <div class="sold-badge">Sold</div>

@@ -36,6 +36,13 @@ jobs:
           DB_USERNAME: avnadmin
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           MYSQL_ATTR_SSL_CA: ${{ github.workspace }}/docker/render/aiven-ca.pem
+          # 画像はCloudflare R2に保存する（デモ商品の画像をR2に入れ直すため）
+          FILESYSTEM_DISK: r2
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET: flea-market-images
+          R2_URL: https://pub-5be10e6d6538471c8e02649a37a13af7.r2.dev
         run: php artisan demo:reset
 
       # リセット後、公開デモのページがちゃんと表示されるか確かめる（寝ていたら起きるまで最大3分待つ）

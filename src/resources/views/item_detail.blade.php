@@ -7,7 +7,7 @@
 @section('content')
 <div class="detail-container">
     <div class="detail-image">
-        <img src="{{ asset('storage/' . $item->img_url) }}" alt="{{ $item->name }}">
+        <img src="{{ Storage::url($item->img_url) }}" alt="{{ $item->name }}">
     </div>
 
     <div class="detail-info">
@@ -171,7 +171,7 @@
                     <div class="comment-user">
                         <div class="user-icon">
                             @if($comment->user->img_url)
-                                <img src="{{ asset('storage/' . $comment->user->img_url) }}" alt="ユーザー画像">
+                                <img src="{{ Storage::url($comment->user->img_url) }}" alt="ユーザー画像">
                             @endif
                         </div>
                         <span class="user-name">{{ $comment->user->name }}</span>
@@ -186,7 +186,7 @@
                             <div class="comment-user">
                                 <div class="user-icon">
                                     @if($reply->user->img_url)
-                                        <img src="{{ asset('storage/' . $reply->user->img_url) }}" alt="ユーザー画像">
+                                        <img src="{{ Storage::url($reply->user->img_url) }}" alt="ユーザー画像">
                                     @endif
                                 </div>
                                 <span class="user-name">{{ $reply->user->name }}</span>

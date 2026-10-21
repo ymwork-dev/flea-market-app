@@ -6,6 +6,7 @@ use App\Http\Requests\ProfileRequest;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 // ProfileControllerクラスは、プロフィールに関連する操作を処理するコントローラー
 class ProfileController extends Controller
@@ -50,7 +51,11 @@ class ProfileController extends Controller
 
         // もし画像のアップロードリクエストがあれば、保存し、ユーザー画像を更新
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('profiles', 'public');
+            // 古いプロフィール画像があれば、保存先から削除する
+            if ($user->img_url) {
+                Storage::delete($user->img_url);
+            }
+            $path = $request->file('image')->store('profiles');
             $user->img_url = $path;
         }
 

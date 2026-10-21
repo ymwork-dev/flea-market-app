@@ -14,7 +14,7 @@
         <div class="image-upload-section">
             <div class="image-preview">
                 <img id="profile-preview"
-                    src="{{ auth()->user()->img_url ? asset('storage/' . auth()->user()->img_url) : '#' }}" 
+                    src="{{ auth()->user()->img_url ? Storage::url(auth()->user()->img_url) : '#' }}" 
                     class="{{ auth()->user()->img_url ? '' : 'hidden' }}">
             </div>
             <label class="image-select-btn">

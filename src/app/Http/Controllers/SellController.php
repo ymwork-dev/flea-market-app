@@ -6,6 +6,7 @@ use App\Models\Item;
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ExhibitionRequest;
+use Illuminate\Support\Facades\Storage;
 
 // 出品に関する処理を行うコントローラー
 class SellController extends Controller
@@ -28,7 +29,7 @@ class SellController extends Controller
         // 画像ファイルがある場合、保存してパスを取得。画像が無い場合は空
         $path = null;
         if ($request->hasFile('img_url')) {
-            $path = $request->file('img_url')->store('items', 'public');
+            $path = $request->file('img_url')->store('items');
         }
 
         // 新しい商品を作成してitemsテーブルに保存
@@ -91,7 +92,11 @@ class SellController extends Controller
         $path = $item->img_url;
         // 画像ファイルの更新がある場合、保存し、画像ファイルのパスを取得
         if ($request->hasFile('img_url')) {
-            $path = $request->file('img_url')->store('items', 'public');
+            // 古い画像があれば、保存先（ローカル または R2）から削除する
+            if ($item->img_url) {
+                Storage::delete($item->img_url);
+            }
+            $path = $request->file('img_url')->store('items');
         }
 
         // 商品の更新をitemデータベースに保存
@@ -125,6 +130,10 @@ class SellController extends Controller
         // 出品した商品が販売中かの確認、違う場合403エラー
         $this->ensureEditable($item);
 
+        // 商品画像があれば、保存先から削除する
+        if ($item->img_url) {
+            Storage::delete($item->img_url);
+        }
         // itemデータベースから選択した商品情報の削除
         $item->delete();
 

@@ -8,7 +8,6 @@ use App\Models\User;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 // 商品のデモデータを入れるシーダ―クラス
@@ -151,13 +150,9 @@ class ItemSeeder extends Seeder
             ],
         ];
 
-        // 画像を置くフォルダ
-        $targetDirectory = storage_path('app/public/items');
-        // フォルダがない場合
-        if (!File::isDirectory($targetDirectory)) {
-            // フォルダを作る
-            File::makeDirectory($targetDirectory, 0755, true, true);
-        }
+        // 前回までの商品画像（デモの閲覧者がアップした画像も含む）を、保存先から全部消す
+        // ※ 商品データも上で全部消しているので、画像だけ残っても使われないため
+        Storage::deleteDirectory('items');
 
         // 商品データを1つずつ処理する
         foreach ($items as $itemData) {
@@ -171,11 +166,8 @@ class ItemSeeder extends Seeder
 
             // 画像の場所からファイル名だけ取り出す
             $fileName = basename($itemData['img_url']);
-            // コピーして商品画像の置き場所に置く
-            File::copy(
-                public_path('img/dummy/' . $fileName),
-                storage_path('app/public/items/' . $fileName)
-            );
+            // public/img/dummy の画像を、保存先（手元 または R2）の items フォルダにコピーする
+            Storage::putFileAs('items', public_path('img/dummy/' . $fileName), $fileName);
 
             // カテゴリ名をIDに変える
             $categoryIds = [];

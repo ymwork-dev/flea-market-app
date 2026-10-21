@@ -10,7 +10,7 @@
         <div class="purchase-main">
             <div class="item-info">
                 <div class="item-image">
-                    <img src="{{ asset('storage/' . $item->img_url) }}" alt="{{ $item->name }}">
+                    <img src="{{ Storage::url($item->img_url) }}" alt="{{ $item->name }}">
                 </div>
                 <div class="item-detail">
                     <h1>{{ $item->name }}</h1>

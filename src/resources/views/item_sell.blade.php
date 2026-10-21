@@ -30,7 +30,7 @@
 
             @if($isEdit && $item->img_url)
                 <div class="form-group-image">
-                    <img src="{{ asset('storage/' . $item->img_url) }}" alt="{{ $item->name }}" class="current-image-preview">
+                    <img src="{{ Storage::url($item->img_url) }}" alt="{{ $item->name }}" class="current-image-preview">
                 </div>
             @endif
 

@@ -10,7 +10,7 @@
         <div class="profile-info">
             <div class="profile-image">
                 @if($user->img_url)
-                    <img src="{{ asset('storage/' . $user->img_url) }}" alt="プロフィール画像">
+                    <img src="{{ Storage::url($user->img_url) }}" alt="プロフィール画像">
                 @endif
             </div>
             <h1 class="user-name">{{ $user->name }}</h1>
@@ -27,7 +27,7 @@
         @foreach($items as $item)
             <a href="/item/{{ $item->id }}" class="product-card">
                 <div class="product-image-wrapper">
-                    <img src="{{ asset('storage/' . $item->img_url) }}" alt="{{ $item->name }}">
+                    <img src="{{ Storage::url($item->img_url) }}" alt="{{ $item->name }}">
                     @if($item->needs_shipping)
                         <span class="sold-badge shipping-badge">発送準備中</span>
                     @elseif($item->is_sold)

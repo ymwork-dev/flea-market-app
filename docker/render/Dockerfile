@@ -24,9 +24,6 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 # 第1段階でビルドしたCSS・JSだけを持ってくる
 COPY --from=assets /app/public/build ./public/build
 
-# デモ用の商品画像を、seederと同じようにstorageへコピーしておく
-RUN mkdir -p storage/app/public/items && cp public/img/dummy/*.jpg storage/app/public/items/
-
 # public/storage から storage/app/public への近道を作る（画像をURLで見せるため）
 RUN php artisan storage:link
 

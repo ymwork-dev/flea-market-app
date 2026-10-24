@@ -34,6 +34,9 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 COPY docker/render/nginx.conf /etc/nginx/http.d/default.conf
 COPY docker/render/start.sh /start.sh
 
+# PHPの設定（バージョンを隠す・時刻の基準）を置く
+COPY docker/render/php.ini /usr/local/etc/php/conf.d/zz-custom.ini
+
 # AivenのCA証明書を置く（本番のDBと暗号化してつなぐときに使う）
 COPY docker/render/aiven-ca.pem /etc/ssl/aiven-ca.pem
 

@@ -7,7 +7,7 @@ COPY src/ ./
 RUN npm run build
 
 # ===== 第2段階: 本番で動かすイメージ =====
-FROM php:8.3-fpm-alpine
+FROM php:8.3.36-fpm-alpine
 
 # nginxと、MySQLにつなぐためのPHP拡張を入れる
 RUN apk add --no-cache nginx unzip

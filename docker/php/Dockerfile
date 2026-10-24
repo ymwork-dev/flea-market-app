@@ -1,5 +1,5 @@
 # 土台となるイメージを指定
-FROM php:8.3-fpm
+FROM php:8.3.36-fpm
 
 # php.iniをコンテナ内に標準設定から上書き
 COPY php.ini /usr/local/etc/php/php.ini
